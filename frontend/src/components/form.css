@@ -1,0 +1,16 @@
+.form {
+  justify-content: center;
+}
+
+.form-heading {
+  text-align: center;
+  color: midnightblue;
+}
+
+.form-field {
+  margin-bottom: 10px;
+}
+
+.form-error {
+  color: purple;
+}
