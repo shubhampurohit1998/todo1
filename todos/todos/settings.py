@@ -121,6 +121,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+
+AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',
+                           'allauth.account.auth_backends.AuthenticationBackend']
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
@@ -129,16 +133,10 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'todo.User'
 
-# ACCOUNT_EMAIL_REQUIRED = True
-# # # ACCOUNT_EMAIL_VERIFICATION = "none"
-# ACCOUNT_USERNAME_REQUIRED = False
-# ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-# ACCOUNT_EMAIL_VERIFICATION = "optional"
-
-# ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-# ACCOUNT_USERNAME_REQUIRED = False
-# ACCOUNT_EMAIL_REQUIRED = True
-# # ACCOUNT_EMAIL_VERIFICATION = 'none'
-LOGIN_REDIRECT_URL ="api/todos/"
+# LOGIN_REDIRECT_URL = "api/todos/"
