@@ -6,25 +6,33 @@ import Grid from "@material-ui/core/Grid/Grid";
 import Checkbox from "@material-ui/core/Checkbox/Checkbox";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Fab from "@material-ui/core/Fab/Fab";
-import { reduxForm, Field } from "redux-form";
+import { Field } from "redux-form";
+// import { reduxForm, Field } from "redux-form";
 const list = [
-  "visit to doctor",
-  "breakfast at 9 PM",
-  "sleep at 11 AM",
-  "Play ps5 on sunday",
+  { title: "visit to doctor", isDone: false },
+  { title: "breakfast at 9 PM", isDone: true },
+  { title: "sleep at 11 AM", isDone: false },
+  { title: "Play ps5 on sunday", isDone: false },
 ];
 
-const renderField = () => (
-  <TextField label="Todo" placeholder="Write your todo here" fullWidth={true} />
-);
-
 class Home extends React.Component {
-  // constructor(props){
-  //   super(props);
-  //   this.state{
+  state = {
+    todo: "",
+  };
 
-  //   }
-  // }
+  handleChange = (event) => {
+    this.setState({
+      todo: event.target.value,
+    });
+  };
+
+  onAddClick = () => {
+    if (this.state.todo) {
+      list.push(this.state.todo);
+      this.setState({ todo: "" });
+    }
+  };
+
   render() {
     return (
       <Grid
@@ -35,7 +43,7 @@ class Home extends React.Component {
         className="home"
       >
         <Grid
-          container   
+          container
           item
           sm
           justify="space-around"
@@ -47,10 +55,12 @@ class Home extends React.Component {
               label="Todo"
               placeholder="Write your todo here"
               fullWidth={true}
+              onChange={this.handleChange}
+              value={this.state.todo}
             />
           </Grid>
           <Grid>
-            <Fab color="primary" aria-label="add">
+            <Fab color="primary" aria-label="add" onClick={this.onAddClick}>
               <AddIcon />
             </Fab>
           </Grid>
@@ -61,11 +71,11 @@ class Home extends React.Component {
             <Grid container item sm direction="row" justify="center">
               <Grid item sm={10}>
                 <Checkbox
-                  defaultChecked={false}
+                  defaultChecked={item.isDone}
                   color="primary"
                   inputProps={{ "aria-label": "secondary checkbox" }}
                 />
-                {item}
+                {item.isDone ? <s>{item.title}</s> : item.title}
                 <br />
                 <small>created at</small>
               </Grid>
@@ -80,9 +90,9 @@ class Home extends React.Component {
   }
 }
 
-Home = reduxForm({
-  form: "todo-form",
-})(Home);
+// Home = reduxForm({
+//   form: "todo-form",
+// })(Home);
 
 export default Home;
 
