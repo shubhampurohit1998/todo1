@@ -35,12 +35,16 @@ const renderField = ({
 );
 
 class Login extends React.Component {
-  submit = (values) => {
-    alert("Form submitted successfully.....");
-    console.log(values);
-  };
   render() {
-    const { handleSubmit, pristine, reset, submitting, invalid } = this.props;
+    const {
+      handleSubmit,
+      pristine,
+      reset,
+      submitting,
+      invalid,
+      submitSucceeded,
+    } = this.props;
+    const { login } = this.props;
     return (
       <div>
         <Grid container direction="row" alignItems="baseline" className="form">
@@ -49,7 +53,7 @@ class Login extends React.Component {
             <Typography component="h1" variant="h3" className="form-heading">
               Login
             </Typography>
-            <form onSubmit={handleSubmit((data) => this.submit({ ...data }))}>
+            <form onSubmit={handleSubmit((data) => login({ ...data }))}>
               <Field
                 name="email"
                 label="Email*"
@@ -89,8 +93,8 @@ class Login extends React.Component {
 Login = reduxForm({
   form: "login-form",
   validate,
-  asyncValidate,
-  asyncChangeFields: ["email"],
+  // asyncValidate,
+  // asyncChangeFields: ["email"],
 })(Login);
 
 export default Login;

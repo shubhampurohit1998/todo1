@@ -14,6 +14,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -30,6 +31,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
+    # CORS
+    'corsheaders',
+
 
 ]
 
@@ -37,6 +41,7 @@ SITE_ID = 1
 
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -141,3 +146,13 @@ ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 # LOGIN_REDIRECT_URL = "api/todos/"
+
+# CORS setting
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:3000"
+]
+
+# To turn of trailing slash at the end of url
+APPEND_SLASH = False
