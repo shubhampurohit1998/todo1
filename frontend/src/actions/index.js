@@ -4,8 +4,16 @@ import {
   AUTH_REQUEST,
   AUTH_SUCCESS,
   AUTH_LOGOUT,
+  GET_SELECTED_TODO,
+  TODOS_FAILURE,
+  TODOS_REQUEST,
+  TODOS_SUCCESS,
+  DELETE_TODO,
+  TODO_CREATED,
+  UPDATE_TODO,
 } from "../constants/index";
-import { baseURL } from "../utility/index";
+import { baseURL, headers } from "../utility/index";
+import _ from "lodash";
 
 export const authCheckState = () => (dispatch) => {
   dispatch({ type: AUTH_REQUEST });
@@ -24,8 +32,8 @@ export const login = (values) => (dispatch) => {
   axios
     .post(`${baseURL}/auth/login/`, values)
     .then((response) => {
-      dispatch({ type: AUTH_SUCCESS, payload: response.data.key });
-      localStorage.setItem("token", response.data.key);
+      dispatch({ type: AUTH_SUCCESS, payload: response.data.access_token });
+      localStorage.setItem("token", response.data.access_token);
     })
     .catch((error) => {
       console.log(error.message);
@@ -36,4 +44,89 @@ export const login = (values) => (dispatch) => {
 export const logout = () => (dispatch) => {
   dispatch({ type: AUTH_LOGOUT });
   localStorage.removeItem("token");
+};
+
+export const getTodo = () => (dispatch) => {
+  dispatch({ type: TODOS_REQUEST });
+  axios
+    .get(`${baseURL}/api/todos/get_todos`, headers)
+    .then((response) => {
+      dispatch({ type: TODOS_SUCCESS, payload: response.data });
+    })
+    .catch((error) => {
+      dispatch({ type: TODOS_FAILURE, payload: error.message });
+    });
+};
+
+export const createTodo = (values) => (dispatch) => {
+  const obj = {
+    title: values.todo,
+  };
+  console.log(obj);
+  dispatch({ type: TODOS_REQUEST });
+  axios
+    .post(`${baseURL}/api/todos`, obj, headers)
+    .then((response) => {
+      console.log(response.data);
+      dispatch({ type: TODO_CREATED, payload: response.data });
+    })
+    .catch((error) => {
+      console.log(error);
+      dispatch({
+        type: TODOS_FAILURE,
+        payload: "Todo not created successfully",
+      });
+    });
+};
+
+export const deleteTodo = (todo) => (dispatch, getState) => {
+  dispatch({ type: TODOS_REQUEST });
+  const todo_list = getState().todo.todos;
+  const new_todos = _.difference(todo_list, [todo]);
+  console.log(new_todos);
+  axios
+    .delete(`${baseURL}/api/todos/${todo.id}`, headers)
+    .then((response) => {
+      dispatch({ type: DELETE_TODO, payload: new_todos });
+    })
+    .catch((error) => {
+      console.log(error.message);
+      dispatch({ type: TODOS_FAILURE, payload: error.message });
+    });
+};
+
+export const markComplete = (todo_obj) => (dispatch, getState) => {
+  dispatch({ type: TODOS_REQUEST });
+  const obj = todo_obj;
+  obj.is_complete = !obj.is_complete;
+
+  const todo_list = getState().todo.todos;
+  const element = _.find(todo_list, (obj) => {
+    return obj.id === todo_obj.id;
+  });
+  const index = _.indexOf(todo_list, element);
+  todo_list.splice(index, 1, obj);
+
+  axios
+    .patch(`${baseURL}/api/todos/${obj.id}`, obj, headers)
+    .then((response) => {
+      dispatch({ type: UPDATE_TODO, payload: todo_list });
+    })
+    .catch((error) => {
+      dispatch({ type: TODOS_FAILURE, error: "Todo didn't update" });
+    });
+};
+
+export const getSelectedTodo = (id) => (dispatch, getState) => {
+  dispatch({ type: TODOS_REQUEST });
+  // const newArray = getState().todo.selectedTodo;
+  axios
+    .get(`${baseURL}/api/todos/${id}`, headers)
+    .then((response) => {
+      // newArray.push(response.data);
+      dispatch({ type: GET_SELECTED_TODO, payload: [response.data] });
+    })
+    .catch((error) => {
+      dispatch({ type: TODOS_FAILURE, payload: error.message });
+    });
 };

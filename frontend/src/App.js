@@ -1,57 +1,126 @@
 import React, { useEffect } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
 import Home from "./container/Home";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Container from "@material-ui/core/Container/Container";
 import Spinner from "@material-ui/core/CircularProgress/CircularProgress";
+import Logo from "./assets/bestpeers.png";
+import Typography from "@material-ui/core/Typography/Typography";
 import { connect } from "react-redux";
-import { login, authCheckState, logout } from "./actions/index";
+import {
+  login,
+  authCheckState,
+  logout,
+  getTodo,
+  createTodo,
+  deleteTodo,
+  markComplete,
+  getSelectedTodo,
+} from "./actions/index";
 import { useHistory } from "react-router-dom";
+import ProtectedRoute from "./protected.route/Protected";
+import TodoItem from "./components/TodoItem";
 function App(props) {
   const {
     auth: { token, loading },
     login,
     logout,
     tryAutoLogin,
+    getTodo,
+    todo,
+    createTodo,
+    deleteTodo,
+    isAuthenticated,
+    markComplete,
+    getSelectedTodo,
   } = props;
 
   useEffect(() => {
     tryAutoLogin();
+    getTodo();
   }, []);
 
   const history = useHistory();
 
   return (
     <div className="App">
-      <center>BestPeers Do</center>
       {loading ? (
         <Spinner />
       ) : (
         <Router>
-          <Link to="/">Home</Link>
-          {token ? (
-            <div className="home-logout" onClick={logout}>
-              Log out
-            </div>
-          ) : (
-            <>
-              <Link to="/login">Login</Link>
-              <Link to="/signup">Signup</Link>
-            </>
-          )}
+          <center>
+            {/* <img src={Logo} alt="Bestpeers Do" /> */}
+            <Typography variant="h4" component="h2">
+              BestPeers Do
+            </Typography>
 
+            <Link to="/">Home</Link>
+            {token ? (
+              <div className="home-logout" onClick={logout}>
+                Log out
+              </div>
+            ) : (
+              <>
+                <Link to="/login">Login</Link>
+                <Link to="/signup">Signup</Link>
+              </>
+            )}
+          </center>
           <Switch>
-            <Route exact path="/" component={Home} />
             <Route
-              path="/login"
-              // component={Login}
-              render={(props) => {
-                return <Login login={login} history={history} />;
+              exact
+              path="/"
+              render={() => {
+                if (isAuthenticated) {
+                  return (
+                    <Home
+                      getTodo={getTodo}
+                      todo={todo}
+                      history={history}
+                      isAuthenticated={isAuthenticated}
+                      createTodo={createTodo}
+                      deleteTodo={deleteTodo}
+                      markComplete={markComplete}
+                    />
+                  );
+                } else {
+                  return <Redirect to="/login" />;
+                }
               }}
             />
-            <Route path="/signup" component={Signup} />
+            {/* <ProtectedRoute path="/" component={Home} /> */}
+            <Route
+              path="/login"
+              render={() => {
+                if (!isAuthenticated) {
+                  return <Login login={login} history={history} />;
+                } else {
+                  return <Redirect to="/" />;
+                }
+              }}
+            />
+            <Route
+              path="/signup"
+              render={() => {
+                return <Signup history={history} />;
+              }}
+            />
+            <Route
+              path="/todo/:id"
+              render={() => {
+                return (
+                  <TodoItem getSelectedTodo={getSelectedTodo} todo={todo} />
+                );
+              }}
+            />
           </Switch>
         </Router>
       )}
@@ -62,6 +131,8 @@ function App(props) {
 const mapStateToProps = (state) => {
   return {
     auth: state.auth,
+    todo: state.todo,
+    isAuthenticated: state.auth.token ? true : false,
   };
 };
 
@@ -75,6 +146,21 @@ const mapDispatchToProps = (dispatch) => {
     },
     logout: () => {
       dispatch(logout());
+    },
+    getTodo: () => {
+      dispatch(getTodo());
+    },
+    createTodo: (values) => {
+      dispatch(createTodo(values));
+    },
+    deleteTodo: (todo) => {
+      dispatch(deleteTodo(todo));
+    },
+    markComplete: (todo_object) => {
+      dispatch(markComplete(todo_object));
+    },
+    getSelectedTodo: (id) => {
+      dispatch(getSelectedTodo(id));
     },
   };
 };

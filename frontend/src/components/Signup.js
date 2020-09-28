@@ -16,7 +16,7 @@ const renderField = ({
   type,
   meta: { error, warning, touched, asyncValidating },
 }) => (
-  <div>
+  <div className={asyncValidating ? "async-validating" : ""}>
     <TextField
       {...input}
       type={type}
@@ -39,8 +39,22 @@ class Signup extends React.Component {
     alert("Form submitted successfully.....");
     console.log(values);
   };
+
+  // componentDidUpdate() {
+  //   if (this.props.submitSucceeded) {
+  //     this.props.history.push("/");
+  //   }
+  // }
+
   render() {
-    const { handleSubmit, pristine, reset, submitting, invalid } = this.props;
+    const {
+      handleSubmit,
+      pristine,
+      reset,
+      submitting,
+      invalid,
+      submitFailed,
+    } = this.props;
     return (
       <div>
         <Grid container direction="row" alignItems="baseline" className="form">
@@ -71,6 +85,7 @@ class Signup extends React.Component {
                 component={renderField}
                 className="form-field"
               />
+              {submitFailed ? <small>Something went wrong</small> : null}
               <Button
                 type="submit"
                 color="primary"
@@ -96,8 +111,8 @@ class Signup extends React.Component {
 Signup = reduxForm({
   form: "signup-form",
   validate,
-  // asyncValidate,
-  // asyncChangeFields: ["email"],
+  asyncValidate,
+  asyncBlurFields: ["email"],
 })(Signup);
 
 export default Signup;
