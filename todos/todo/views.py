@@ -62,16 +62,6 @@ class TodoDetailViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixi
     serializer_class = serializers.TodoSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    # Overriding default implementation
-    # def get(self, request, *args, **kwargs):
-    #     return self.retrieve(request, *args, **kwargs)
-
-    # def put(self, request, *args, **kwargs):
-    #     return self.update(request, *args, **kwargs)
-
-    # def delete(self, request, *args, **kwargs):
-    #     return self.destroy(request, *args, **kwargs)
-
     @action(detail=False, methods=['GET'])
     def get_todos(self, request, pk=None):
         queryset = self.get_queryset().filter(user=request.user).order_by('-created_at')

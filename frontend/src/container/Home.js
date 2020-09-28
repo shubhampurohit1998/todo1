@@ -18,20 +18,6 @@ class Home extends React.Component {
     if (this.props.isAuthenticated) this.props.getTodo();
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return (
-  //     nextProps.isAuthenticated !== this.props.isAuthenticated ||
-  //     nextProps.todo !== this.props.todo
-  //   );
-  // }
-
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.todo !== this.props.todo) {
-  //     console.log("Componet is updating");
-  //     this.props.getTodo();
-  //   }
-  // }
-
   render() {
     const {
       todo: { loading, todos, error },
@@ -44,7 +30,6 @@ class Home extends React.Component {
         container
         direction="column"
         justify="center"
-        // alignItems="baseline"
         className="home"
       >
         <Grid container item sm direction="column" alignItems="center">
