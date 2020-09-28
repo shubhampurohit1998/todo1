@@ -67,3 +67,6 @@ class TodoDetailViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixi
         queryset = self.get_queryset().filter(user=request.user).order_by('-created_at')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    # @action(detail=Fa)
+    

@@ -28,6 +28,7 @@ import {
 import { useHistory } from "react-router-dom";
 import ProtectedRoute from "./protected.route/Protected";
 import TodoItem from "./components/TodoItem";
+import AppBar from "./components/AppBar";
 function App(props) {
   const {
     auth: { token, loading },
@@ -56,24 +57,7 @@ function App(props) {
         <Spinner />
       ) : (
         <Router>
-          <center>
-            {/* <img src={Logo} alt="Bestpeers Do" /> */}
-            <Typography variant="h4" component="h2">
-              BestPeers Do
-            </Typography>
-
-            <Link to="/">Home</Link>
-            {token ? (
-              <div className="home-logout" onClick={logout}>
-                Log out
-              </div>
-            ) : (
-              <>
-                <Link to="/login">Login</Link>
-                <Link to="/signup">Signup</Link>
-              </>
-            )}
-          </center>
+          <AppBar logout={logout} isAuthenticated={isAuthenticated} />
           <Switch>
             <Route
               exact

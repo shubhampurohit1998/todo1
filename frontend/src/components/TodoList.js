@@ -8,6 +8,8 @@ import Divider from "@material-ui/core/Divider";
 import ListItemText from "@material-ui/core/ListItemText";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
+import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
+import RadioButtonUncheckedRoundedIcon from "@material-ui/icons/RadioButtonUncheckedRounded";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -31,24 +33,28 @@ const TodoList = (props) => {
       {todos.map((todo) => (
         <>
           <ListItem alignItems="flex-start">
-            <Checkbox
-              defaultChecked={todo.is_complete}
-              color="primary"
-              inputProps={{ "aria-label": "secondary checkbox" }}
-              onClick={() => markComplete(todo)}
-            />
             {todo.is_complete ? (
-              <ListItemText
-                primary={<s>{todo.title}</s>}
-                secondary={"Created " + moment(todo.created_at).fromNow()}
-                onClick={() => gotoTodo(todo.id)}
-              />
+              <>
+                <span onClick={() => markComplete(todo)}>
+                  <CheckCircleRoundedIcon color="primary" />
+                </span>
+                <ListItemText
+                  primary={<s>{todo.title}</s>}
+                  secondary={"Created " + moment(todo.created_at).fromNow()}
+                  onClick={() => gotoTodo(todo.id)}
+                />
+              </>
             ) : (
-              <ListItemText
-                primary={todo.title}
-                secondary={"Created " + moment(todo.created_at).fromNow()}
-                onClick={() => gotoTodo(todo.id)}
-              />
+              <>
+                <span onClick={() => markComplete(todo)}>
+                  <RadioButtonUncheckedRoundedIcon />
+                </span>
+                <ListItemText
+                  primary={todo.title}
+                  secondary={"Created " + moment(todo.created_at).fromNow()}
+                  onClick={() => gotoTodo(todo.id)}
+                />
+              </>
             )}
 
             <span onClick={() => deleteTodo(todo)}>
