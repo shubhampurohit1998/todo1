@@ -23,11 +23,14 @@ import {
   deleteTodo,
   markComplete,
   getSelectedTodo,
+  getUsersList,
+  getProfile,
 } from "./actions/index";
 import { useHistory } from "react-router-dom";
 import ProtectedRoute from "./protected.route/Protected";
 import TodoItem from "./components/TodoItem";
 import AppBar from "./components/AppBar";
+import Profile from "./components/Profile";
 function App(props) {
   const {
     auth: { token, loading },
@@ -41,6 +44,9 @@ function App(props) {
     isAuthenticated,
     markComplete,
     getSelectedTodo,
+    getUsersList,
+    profile,
+    getProfile,
   } = props;
 
   useEffect(() => {
@@ -108,6 +114,16 @@ function App(props) {
                 );
               }}
             />
+            <Route
+              path="/profile"
+              render={() => {
+                if (isAuthenticated) {
+                  return <Profile profile={profile} getProfile={getProfile} />;
+                } else {
+                  return <Redirect to="/login" />;
+                }
+              }}
+            />
           </Switch>
         </Router>
       )}
@@ -120,6 +136,8 @@ const mapStateToProps = (state) => {
     auth: state.auth,
     todo: state.todo,
     isAuthenticated: state.auth.token ? true : false,
+    user: state.user,
+    profile: state.profile,
   };
 };
 
@@ -148,6 +166,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     getSelectedTodo: (id) => {
       dispatch(getSelectedTodo(id));
+    },
+    getUsersList: () => {
+      dispatch(getUsersList());
+    },
+    getProfile: () => {
+      dispatch(getProfile());
     },
   };
 };

@@ -142,7 +142,7 @@ REST_AUTH_SERIALIZERS = {
 }
 
 REST_AUTH_REGISTER_SERIALIZERS = {
-    'REGISTER_SERIALIZER': 'todo.serializers.RegisterSerializer'
+    'REGISTER_SERIALIZER': 'todo.serializers.RegisterSerializer',
 }
 
 # Static files (CSS, JavaScript, Images)

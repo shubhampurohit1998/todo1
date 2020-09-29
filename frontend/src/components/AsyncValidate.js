@@ -17,13 +17,17 @@ import axios from "axios";
 //   });
 // };
 
-const asyncValidate = (values /*, dispatch */) => {
+const asyncValidate = (values) => {
+  const user = values.user_type === "user";
+  const agent = values.user_type === "agent";
   const obj = {
     email: values.email,
     password1: values.password,
     password2: values.re_password,
+    is_user: values.user_type === "user" ? true : false,
+    is_agent: values.user_type === "agent" ? true : false,
   };
-  console.log(values);
+  console.log(obj);
   axios
     .post(`${baseURL}/auth/registration/`, obj)
     .then((response) => {

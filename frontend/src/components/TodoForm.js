@@ -5,7 +5,13 @@ import InputAdornment from "@material-ui/core/InputAdornment/InputAdornment";
 import Button from "@material-ui/core/Button/Button";
 import SendIcon from "@material-ui/icons/Send";
 import TextField from "@material-ui/core/TextField/TextField";
-import { reduxForm, Field } from "redux-form";
+import { reduxForm, Field, reset } from "redux-form";
+
+const todoFormStyle = {
+  padding: "10px 10px 10px 10px",
+  display: "flex",
+  flexDierectio: "row",
+};
 
 const renderField = ({ input, label, meta: { touched, error } }) => (
   <TextField
@@ -37,18 +43,23 @@ class TodoForm extends Component {
       createTodo,
     } = this.props;
     return (
-      <form onSubmit={handleSubmit((data) => createTodo({ ...data }))}>
-        <FormControl>
+      <form
+        onSubmit={handleSubmit((data) => createTodo({ ...data }))}
+        style={todoFormStyle}
+      >
+        <FormControl fullWidth>
           <Field name="todo" type="text" label="Todo" component={renderField} />
-          <Button
-            variant="contained"
-            color="primary"
-            // disabled={pristine || error || submitting}
-            type="submit"
-          >
-            ADD TODO <SendIcon />
-          </Button>
         </FormControl>
+        <Button
+          variant="contained"
+          color="primary"
+          // disabled={pristine || error || submitting}
+          type="submit"
+          onClick={reset}
+          size="small"
+        >
+          ADD TODO <SendIcon />
+        </Button>
       </form>
     );
   }

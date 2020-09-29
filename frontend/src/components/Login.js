@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 import validate from "./validate";
 import asyncValidate from "./AsyncValidate";
-import "./form.css";
+import "../styles/form.css";
 const renderField = ({
   input,
   label,
@@ -35,7 +35,6 @@ const renderField = ({
 );
 
 class Login extends React.Component {
-
   render() {
     const {
       handleSubmit,

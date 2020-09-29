@@ -15,3 +15,12 @@ export const TODO_CREATED = "TODO_CREATED";
 export const GET_SELECTED_TODO = "GET_SELECTED_TODO";
 export const DELETE_TODO = "DELETE_TODO";
 export const UPDATE_TODO = "UPDATE_TODO";
+// Users
+export const USER_REQUEST = "USER_REQUEST";
+export const USER_SUCCESS = "USER_SUCCESS";
+export const USER_FAILURE = "USER_FAILURE";
+export const SELECTED_USER = "SELECTED_USER";
+// Profile
+export const PROFILE_REQUEST = "PROFILE_REQUEST";
+export const PROFILE_SUCCESS = "PROFILE_SUCCESS";
+export const PROFILE_FAILURE = "PROFILE_FAILURE";

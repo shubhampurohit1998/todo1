@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
 
-    is_user = models.BooleanField(default=False, verbose_name="User"    )
+    is_user = models.BooleanField(default=False, verbose_name="User")
     is_agent = models.BooleanField(default=False, verbose_name="Agent")
 
     def __str__(self):

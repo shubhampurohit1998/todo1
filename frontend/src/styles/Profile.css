@@ -1,0 +1,10 @@
+.profile {
+  background: "../../assets/profile_background.jpg";
+}
+
+.profile-background {
+  object-fit: cover;
+  width: 100%;
+  height: 350px;
+  border-radius: 15px;
+}

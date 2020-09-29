@@ -3,6 +3,7 @@ import Grid from "@material-ui/core/Grid/Grid";
 import TodoList from "../components/TodoList";
 import Spinner from "@material-ui/core/CircularProgress/CircularProgress";
 import TodoForm from "../components/TodoForm";
+import "../styles/Home.css";
 class Home extends React.Component {
   state = {
     todo: "",
@@ -26,17 +27,12 @@ class Home extends React.Component {
       markComplete,
     } = this.props;
     return (
-      <Grid
-        container
-        direction="column"
-        justify="center"
-        className="home"
-      >
-        <Grid container item sm direction="column" alignItems="center">
+      <Grid container direction="column" justify="center" className="home">
+        <Grid item sm className="home-upper">
           <TodoForm createTodo={createTodo} />
         </Grid>
 
-        <Grid item sm>
+        <Grid item sm className="home-lower">
           {loading ? (
             <Spinner className="homepage-spinner" />
           ) : !error ? (

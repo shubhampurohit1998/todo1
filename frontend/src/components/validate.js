@@ -20,6 +20,9 @@ const validate = (values) => {
   } else if (values.password !== values.re_password) {
     errors.re_password = "Password should be exact same";
   }
+  if (!values.user_type) {
+    errors.user_type = "Must choose user type";
+  }
   return errors;
 };
 

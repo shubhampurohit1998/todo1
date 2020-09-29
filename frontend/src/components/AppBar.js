@@ -105,7 +105,9 @@ const Header = (props) => {
           <IconButton edge="end">
             {isAuthenticated ? (
               <>
-                <AccountCircleRoundedIcon />
+                <NavLink to="/profile" className={classes.navLinkStyle}>
+                  <AccountCircleRoundedIcon />
+                </NavLink>
                 <Button color="inherit" onClick={logout}>
                   Logout
                 </Button>

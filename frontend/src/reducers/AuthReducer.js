@@ -3,14 +3,12 @@ import {
   AUTH_SUCCESS,
   AUTH_FAIL,
   AUTH_LOGOUT,
-  REGISTRATION_START,
 } from "../constants/index";
 import { updateObject } from "../utility/index";
 const inititalState = {
   loading: false,
   error: null,
   token: null,
-  success: false,
 };
 
 const authRequest = (state) =>
@@ -37,15 +35,6 @@ const authLogout = (state) =>
     token: null,
   });
 
-// Registration methods
-const registrationStart = (state) =>
-  updateObject(state, {
-    loading: true,
-    error: null,
-  });
-
-const registrationFail = (state) => updateObject();
-
 const reducer = (state = inititalState, action) => {
   switch (action.type) {
     case AUTH_REQUEST:
@@ -56,8 +45,6 @@ const reducer = (state = inititalState, action) => {
       return authFail(state, action);
     case AUTH_LOGOUT:
       return authLogout();
-    case REGISTRATION_START:
-      return;
     default:
       return state;
   }

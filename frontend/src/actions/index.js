@@ -11,6 +11,12 @@ import {
   DELETE_TODO,
   TODO_CREATED,
   UPDATE_TODO,
+  USER_REQUEST,
+  USER_SUCCESS,
+  USER_FAILURE,
+  PROFILE_REQUEST,
+  PROFILE_SUCCESS,
+  PROFILE_FAILURE,
 } from "../constants/index";
 import { baseURL, headers } from "../utility/index";
 import _ from "lodash";
@@ -128,5 +134,29 @@ export const getSelectedTodo = (id) => (dispatch, getState) => {
     })
     .catch((error) => {
       dispatch({ type: TODOS_FAILURE, payload: error.message });
+    });
+};
+
+export const getProfile = () => (dispatch) => {
+  dispatch({ type: PROFILE_REQUEST });
+  axios
+    .get(`${baseURL}/api/users/profile`, headers)
+    .then((response) => {
+      dispatch({ type: PROFILE_SUCCESS, payload: response.data });
+    })
+    .catch((error) => {
+      dispatch({ type: PROFILE_FAILURE, payload: error.message });
+    });
+};
+
+export const getUsersList = () => (dispatch) => {
+  dispatch({ type: USER_REQUEST });
+  axios
+    .get(`${baseURL}/users`, headers)
+    .then((response) => {
+      dispatch({ type: USER_SUCCESS, payload: response.data });
+    })
+    .catch((error) => {
+      dispatch({ type: USER_FAILURE, payload: error.message });
     });
 };

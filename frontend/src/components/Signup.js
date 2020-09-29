@@ -9,7 +9,11 @@ import Typography from "@material-ui/core/Typography/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 import validate from "./validate";
 import asyncValidate from "./AsyncValidate";
-import "./form.css";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import "../styles/form.css";
 const renderField = ({
   input,
   label,
@@ -32,6 +36,15 @@ const renderField = ({
     </center>
     <br />
   </div>
+);
+
+const radioButton = ({ input, ...rest }) => (
+  <FormControl>
+    <RadioGroup {...input} {...rest}>
+      <FormControlLabel value="user" control={<Radio />} label="User" />
+      <FormControlLabel value="agent" control={<Radio />} label="Agent" />
+    </RadioGroup>
+  </FormControl>
 );
 
 class Signup extends React.Component {
@@ -85,6 +98,11 @@ class Signup extends React.Component {
                 component={renderField}
                 className="form-field"
               />
+              <Field name="user_type" value="user" component={radioButton}>
+                <Radio value="user" label="User" />
+                <Radio value="agent" label="Agent" />
+              </Field>
+              <br />
               {submitFailed ? <small>Something went wrong</small> : null}
               <Button
                 type="submit"

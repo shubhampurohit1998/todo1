@@ -9,32 +9,35 @@ from rest_framework import viewsets
 from .models import User, Todo
 from . import serializers
 from rest_framework.filters import SearchFilter, OrderingFilter
+from django.contrib.auth.models import Group
+from .permissions import AgentPermissions, IsOwnerOrAgent, IsInstanceOwner
 
 
-class UserListCreateView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+class UserListCreateDetialView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
+    permission_classes_by_action = {
+        'list': [AgentPermissions],
+        'retrieve': [IsOwnerOrAgent],
+        'partial_update': [IsInstanceOwner],
+        'destroy': [IsInstanceOwner],
+        'update': [IsInstanceOwner]
+    }
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+    def get_permissions(self):
+        try:
+            return [permission() for permission in self.permission_classes_by_action[self.action]]
+        except KeyError:
+            return (permissions.IsAuthenticated(),)
 
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-
-class UserDetailView(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
-
-    queryset = User.objects.all()
-    serializer_class = serializers.UserSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return self.destroy(request, *args, **kwargs)
+    @action(detail=False, methods=['GET'], url_path="profile", url_name="profile")
+    def get_user_profile(self, request, pk=None):
+        try:
+            queryset = self.get_queryset().get(id=request.user.id)
+            serializer = serializers.ProfileSerializer(queryset, many=False)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except(User.DoesNotExist):
+            return Response({"error": 'The user does not exist'}, status=status.HTTP_204_NO_CONTENT)
 
 
 class TodoListCreateView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
@@ -77,4 +80,3 @@ class TodoDetailViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixi
     #                                           title__icontains=request.data.get('title')).order_by('-created_at')
     #     serializer = self.get_serializer(queryset, many=True)
     #     return Response(serializer.data, status=status.HTTP_200_OK)
-
