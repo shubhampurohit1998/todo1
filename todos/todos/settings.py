@@ -136,6 +136,14 @@ USE_TZ = True
 AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',
                            'allauth.account.auth_backends.AuthenticationBackend']
 
+REST_AUTH_SERIALIZERS = {
+    # 'LOGIN_SERIALIZER': 'todo.serializers.UserSerializer',
+
+}
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'todo.serializers.RegisterSerializer'
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
