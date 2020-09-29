@@ -26,3 +26,20 @@ class TodoSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return models.Todo.objects.create(**validated_data)
+
+
+class RegisterSerializer(serializers.ModelSerializer):
+    password1 = serializers.CharField()
+    password2 = serializers.CharField()
+
+    class Meta:
+        model = models.User
+        fields = ('email', 'password1', 'password2', 'is_user', 'is_agent')
+
+    def save(self, request):
+        # import pdb
+        # pdb.set_trace()
+        # print(request.data)
+        serializer = RegisterSerializer(data=request.data)
+        serializer.is_valid()
+        serializer.save(request=request)

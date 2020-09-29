@@ -33,6 +33,7 @@ const TodoItem = (props) => {
   const {
     getSelectedTodo,
     todo: { selectedTodo, loading, error },
+    markComplete,
   } = props;
   useEffect(() => {
     getSelectedTodo(id);
@@ -71,7 +72,9 @@ const TodoItem = (props) => {
               </CardContent>
               <CardActions>
                 <Button size="small">Update</Button>
-                <Button size="small">Mark as not complete</Button>
+                <Button size="small" onClick={() => markComplete(item)}>
+                  {item.is_complete ? "Mark as not complete" : "Mark as done"}
+                </Button>
               </CardActions>
             </Card>
           </Grid>

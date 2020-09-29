@@ -13,5 +13,6 @@ urlpatterns = [
     path('api/', include(urls)),
     path('auth/', include('dj_rest_auth.urls')),
     path('auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('drf/', include('rest_framework.urls')),
     path('', include(router.urls))
 ]

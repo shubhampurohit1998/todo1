@@ -4,7 +4,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   Redirect,
 } from "react-router-dom";
 import Home from "./container/Home";
@@ -101,7 +100,11 @@ function App(props) {
               path="/todo/:id"
               render={() => {
                 return (
-                  <TodoItem getSelectedTodo={getSelectedTodo} todo={todo} />
+                  <TodoItem
+                    getSelectedTodo={getSelectedTodo}
+                    todo={todo}
+                    markComplete={markComplete}
+                  />
                 );
               }}
             />

@@ -36,7 +36,6 @@ class TodoForm extends Component {
       submitSucceeded,
       createTodo,
     } = this.props;
-    console.log(submitSucceeded);
     return (
       <form onSubmit={handleSubmit((data) => createTodo({ ...data }))}>
         <FormControl>
