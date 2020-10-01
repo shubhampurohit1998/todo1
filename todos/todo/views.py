@@ -10,12 +10,16 @@ from .models import User, Todo
 from . import serializers
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.contrib.auth.models import Group
-from .permissions import AgentPermissions, IsOwnerOrAgent, IsInstanceOwner
+from .permissions import AgentPermissions, IsOwnerOrAgent, IsInstanceOwner, UserCanHaveTodos
+from .paginators import TodoPagination, UserPagination
 
 
-class UserListCreateDetialView(viewsets.ModelViewSet):
+class UserListCreateDetialView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
+    filter_backends = (SearchFilter, OrderingFilter)
+    pagination_class = UserPagination
+    search_fields = ['email', 'first_name']
     permission_classes_by_action = {
         'list': [AgentPermissions],
         'retrieve': [IsOwnerOrAgent],
@@ -39,18 +43,47 @@ class UserListCreateDetialView(viewsets.ModelViewSet):
         except(User.DoesNotExist):
             return Response({"error": 'The user does not exist'}, status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=True, methods=['GET'], url_path="todos", url_name="user_todos")
+    def get_user_todos(self, request, pk=None):
+        try:
+            user = self.get_queryset().get(id=pk)
+            queryset = Todo.objects.filter(user=user).order_by('-created_at')
+            serializer = serializers.TodoSerializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({'error': "Bad request"}, status=status.HTTP_400_BAD_REQUEST)
 
-class TodoListCreateView(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+
+class TodoDetailViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     queryset = Todo.objects.all()
     serializer_class = serializers.TodoSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    filter_backends = (SearchFilter, OrderingFilter)
-    search_fields = ('title', '=user',)
+    search_fields = ['title', '=user__id']
+    pagination_class = TodoPagination
+    permission_classes_by_action = {
+        'list': [AgentPermissions],
+        'retrieve': [UserCanHaveTodos | AgentPermissions],
+        'partial_update': [UserCanHaveTodos],
+        'destroy': [UserCanHaveTodos],
+        'update': [UserCanHaveTodos]
+    }
 
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+    def get_permissions(self):
+        try:
+            return [permission() for permission in self.permission_classes_by_action[self.action]]
+        except KeyError:
+            return (permissions.IsAuthenticated(),)
 
-    def post(self, request, *args, **kwargs):
+    @action(detail=False, methods=['GET'])
+    def get_todos(self, request, pk=None):
+        queryset = self.get_queryset().filter(user=request.user).order_by('-created_at')
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(queryset, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request, *args, **kwargs):
         user = None
         try:
             if request and hasattr(request, "user"):
@@ -62,21 +95,9 @@ class TodoListCreateView(mixins.ListModelMixin, mixins.CreateModelMixin, generic
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST,)
 
-
-class TodoDetailViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
-    queryset = Todo.objects.all()
-    serializer_class = serializers.TodoSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    @action(detail=False, methods=['GET'])
-    def get_todos(self, request, pk=None):
-        queryset = self.get_queryset().filter(user=request.user).order_by('-created_at')
+    @action(detail=False, methods=["GET"])
+    def search_todos(self, request):
+        queryset = self.get_queryset().filter(user=request.user,
+                                              title__icontains=request.data.get('title')).order_by('-created_at')
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    # @action(detail=False, methods=["GET"])
-    # def search_todos(self, request):
-    #     queryset = self.get_queryset().filter(user=request.user,
-    #                                           title__icontains=request.data.get('title')).order_by('-created_at')
-    #     serializer = self.get_serializer(queryset, many=True)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)

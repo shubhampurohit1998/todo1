@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
@@ -8,8 +9,48 @@ import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
-import Button from "@material-ui/core/Button/Button";
 import { NavLink } from "react-router-dom";
+
+// For Drawer
+import { withStyles } from "@material-ui/core/styles";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
+import PeopleRoundedIcon from "@material-ui/icons/PeopleRounded";
+import ExitToAppRoundedIcon from "@material-ui/icons/ExitToAppRounded";
+const StyledMenu = withStyles({
+  paper: {
+    border: "1px solid #d3d4d5",
+  },
+})((props) => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "center",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "center",
+    }}
+    {...props}
+  />
+));
+
+const StyledMenuItem = withStyles((theme) => ({
+  root: {
+    "&:focus": {
+      backgroundColor: theme.palette.primary.main,
+      "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
+        color: theme.palette.common.white,
+      },
+    },
+  },
+}))(MenuItem);
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -71,7 +112,17 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = (props) => {
   const classes = useStyles();
-  const { logout, isAuthenticated } = props;
+  const history = useHistory();
+  const { logout, isAuthenticated, profile } = props;
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -108,9 +159,60 @@ const Header = (props) => {
                 <NavLink to="/profile" className={classes.navLinkStyle}>
                   <AccountCircleRoundedIcon />
                 </NavLink>
-                <Button color="inherit" onClick={logout}>
-                  Logout
-                </Button>
+                <IconButton
+                  aria-label="more"
+                  aria-controls="long-menu"
+                  aria-haspopup="true"
+                  onClick={handleClick}
+                  className={classes.navLinkStyle}
+                >
+                  <MoreVertIcon />
+                </IconButton>
+                <StyledMenu
+                  id="customized-menu"
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  {/* {profile.is_agent ? (
+                    <StyledMenuItem
+                      onClick={() => {
+                        handleClose();
+                        history.push("/users");
+                      }}
+                    >
+                      <ListItemIcon>
+                        <PeopleRoundedIcon fontSize="small" />
+                      </ListItemIcon>
+                      <ListItemText primary="Users" />
+                    </StyledMenuItem>
+                  ) : null} */}
+                  {/* Comment out above code when done with reset redux state and comment below code */}
+                  <StyledMenuItem
+                    onClick={() => {
+                      handleClose();
+                      history.push("/users");
+                    }}
+                  >
+                    <ListItemIcon>
+                      <PeopleRoundedIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary="Users" />
+                  </StyledMenuItem>
+                  {/* <StyledMenuItem>
+                    <ListItemIcon>
+                      <DraftsIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary="Drafts" />
+                  </StyledMenuItem> */}
+                  <StyledMenuItem onClick={logout}>
+                    <ListItemIcon>
+                      <ExitToAppRoundedIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary="Logout" />
+                  </StyledMenuItem>
+                </StyledMenu>
               </>
             ) : (
               <Typography variant="subtitle2" noWrap>

@@ -27,108 +27,99 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TodoList = (props) => {
-  const { todos, deleteTodo, markComplete } = props;
-  const classes = useStyles();
-  const history = useHistory();
-  const gotoTodo = (id) => {
-    history.push(`/todo/${id}`);
-  };
-
+const UserTodos = (props) => {
+  const { loading, error, todos } = props;
   const [openCompleteList, setOpenCompleteList] = useState(true);
+  const classes = useStyles();
 
   const activeList = todos.map((todo) =>
     !todo.is_complete ? (
-      <div key={todo.id}>
+      <>
         <ListItem alignItems="flex-start">
           {todo.is_complete ? (
             <>
-              <span onClick={() => markComplete(todo)}>
+              <span>
                 <CheckCircleRoundedIcon color="primary" />
               </span>
               <ListItemText
                 primary={<s>{todo.title}</s>}
                 secondary={"Created " + moment(todo.created_at).fromNow()}
-                onClick={() => gotoTodo(todo.id)}
               />
             </>
           ) : (
             <>
-              <span onClick={() => markComplete(todo)}>
+              <span>
                 <RadioButtonUncheckedRoundedIcon />
               </span>
               <ListItemText
                 primary={todo.title}
                 secondary={"Created " + moment(todo.created_at).fromNow()}
-                onClick={() => gotoTodo(todo.id)}
               />
             </>
           )}
-
-          <span onClick={() => deleteTodo(todo)}>
-            <DeleteIcon color="action" fontSize="large" />
-          </span>
         </ListItem>
         <Divider variant="inset" component="li" />
-      </div>
+      </>
     ) : null
   );
 
   const completeList = todos.map((todo) =>
     todo.is_complete ? (
-      <div key={todo.id}>
+      <>
         <ListItem alignItems="flex-start">
           {todo.is_complete ? (
             <>
-              <span onClick={() => markComplete(todo)}>
-                <CheckCircleRoundedIcon color="primary" />
-              </span>
+              <CheckCircleRoundedIcon color="primary" />
+
               <ListItemText
                 primary={<s>{todo.title}</s>}
                 secondary={"Created " + moment(todo.created_at).fromNow()}
-                onClick={() => gotoTodo(todo.id)}
               />
             </>
           ) : (
             <>
-              <span onClick={() => markComplete(todo)}>
-                <RadioButtonUncheckedRoundedIcon />
-              </span>
+              <RadioButtonUncheckedRoundedIcon />
+
               <ListItemText
                 primary={todo.title}
                 secondary={"Created " + moment(todo.created_at).fromNow()}
-                onClick={() => gotoTodo(todo.id)}
               />
             </>
           )}
-
-          <span onClick={() => deleteTodo(todo)}>
-            <DeleteIcon color="action" fontSize="large" />
-          </span>
         </ListItem>
         <Divider variant="inset" component="li" />
-      </div>
+      </>
     ) : null
   );
 
   return (
-    <List className={classes.root}>
-      {activeList}
-      <Typography variant="inherit">
-        {openCompleteList ? (
-          <span onClick={() => setOpenCompleteList(!openCompleteList)}>
-            <ExpandMoreRoundedIcon color="action" />
-          </span>
-        ) : (
-          <span onClick={() => setOpenCompleteList(!openCompleteList)}>
-            <ChevronRightRoundedIcon color="action" />
-          </span>
-        )}
-        Completed
-      </Typography>
-      {openCompleteList ? completeList : null}
-    </List>
+    <div>
+      {loading ? (
+        <div>Loading....</div>
+      ) : error ? (
+        <div>Something went wrong!</div>
+      ) : (
+        todos.length > 0 && (
+          <List className={classes.root}>
+            {activeList}
+            <Typography variant="inherit">
+              {openCompleteList ? (
+                <span onClick={() => setOpenCompleteList(!openCompleteList)}>
+                  <ExpandMoreRoundedIcon color="action" />
+                </span>
+              ) : (
+                <span onClick={() => setOpenCompleteList(!openCompleteList)}>
+                  <ChevronRightRoundedIcon color="action" />
+                </span>
+              )}
+              Completed
+            </Typography>
+            {openCompleteList ? completeList : null}
+          </List>
+        )
+      )}
+    </div>
   );
 };
 
-export default TodoList;
+export default UserTodos;

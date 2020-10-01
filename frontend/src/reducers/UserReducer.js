@@ -37,8 +37,8 @@ const userFailure = (state, action) =>
 const selectedUser = (state, action) =>
   updateObject(state, {
     loading: false,
-    error: action.payload,
-    selectedUser: [],
+    error: null,
+    selectedUser: action.payload,
   });
 
 const reducer = (state = initialState, action) => {

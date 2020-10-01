@@ -8,7 +8,7 @@ import TextField from "@material-ui/core/TextField/TextField";
 import { reduxForm, Field, reset } from "redux-form";
 
 const todoFormStyle = {
-  padding: "10px 10px 10px 10px",
+  padding: "10px 10px 20px 10px",
   display: "flex",
   flexDierectio: "row",
 };
@@ -55,7 +55,7 @@ class TodoForm extends Component {
           color="primary"
           // disabled={pristine || error || submitting}
           type="submit"
-          onClick={reset}
+          onClick={() => reset()}
           size="small"
         >
           ADD TODO <SendIcon />

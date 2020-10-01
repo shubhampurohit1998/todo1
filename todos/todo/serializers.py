@@ -10,19 +10,19 @@ from django.contrib.auth.models import Group
 
 
 class UserSerializer(serializers.ModelSerializer):
-    todos = serializers.SerializerMethodField()
+    # todos = serializers.SerializerMethodField()
     # This code saved my life
 
-    def get_todos(self, obj):
-        todos = models.Todo.objects.filter(user=obj.id)
-        if not todos:
-            return None
-        return TodoSerializer(todos, many=True).data
-
+    # def get_todos(self, obj):
+    #     todos = models.Todo.objects.filter(user=obj.id)
+    #     if not todos:
+    #         return None
+    #     return TodoSerializer(todos, many=True).data
+    # include 'todos' in fields if want to get user todos along with user
     class Meta:
         model = models.User
         fields = ('id', 'email', 'first_name', 'last_name',
-                  'is_user', 'is_agent', 'todos')
+                  'is_user', 'is_agent',)
 
 
 class ProfileSerializer(serializers.ModelSerializer):

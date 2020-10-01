@@ -12,7 +12,7 @@ router.register("api/users", UserListCreateDetialView)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(urls)),
+    # path('api/', include(urls)),
     path('auth/', include('dj_rest_auth.urls')),
     # path('auth/registration/', include('dj_rest_auth.registration.urls')),
     path('auth/registration/', CustomRegisterView.as_view(), name="registration"),

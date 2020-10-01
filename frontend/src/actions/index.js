@@ -17,6 +17,7 @@ import {
   PROFILE_REQUEST,
   PROFILE_SUCCESS,
   PROFILE_FAILURE,
+  SELECTED_USER,
 } from "../constants/index";
 import { baseURL, headers } from "../utility/index";
 import _ from "lodash";
@@ -40,6 +41,7 @@ export const login = (values) => (dispatch) => {
     .then((response) => {
       dispatch({ type: AUTH_SUCCESS, payload: response.data.access_token });
       localStorage.setItem("token", response.data.access_token);
+      dispatch(getProfile());
     })
     .catch((error) => {
       console.log(error.message);
@@ -57,7 +59,8 @@ export const getTodo = () => (dispatch) => {
   axios
     .get(`${baseURL}/api/todos/get_todos`, headers)
     .then((response) => {
-      dispatch({ type: TODOS_SUCCESS, payload: response.data });
+      console.log(response);
+      dispatch({ type: TODOS_SUCCESS, payload: response.data.results });
     })
     .catch((error) => {
       dispatch({ type: TODOS_FAILURE, payload: error.message });
@@ -152,11 +155,35 @@ export const getProfile = () => (dispatch) => {
 export const getUsersList = () => (dispatch) => {
   dispatch({ type: USER_REQUEST });
   axios
-    .get(`${baseURL}/users`, headers)
+    .get(`${baseURL}/api/users`, headers)
     .then((response) => {
-      dispatch({ type: USER_SUCCESS, payload: response.data });
+      dispatch({ type: USER_SUCCESS, payload: response.data.results });
     })
     .catch((error) => {
       dispatch({ type: USER_FAILURE, payload: error.message });
+    });
+};
+
+export const getSelectedUser = (id) => (dispatch) => {
+  dispatch({ type: USER_REQUEST });
+  axios
+    .get(`${baseURL}/api/users/${id}`, headers)
+    .then((response) => {
+      dispatch({ type: SELECTED_USER, payload: [response.data] });
+    })
+    .catch((error) => {
+      dispatch({ type: USER_FAILURE, payload: error.message });
+    });
+};
+
+export const getUserTodo = (id) => (dispatch) => {
+  dispatch({ type: TODOS_REQUEST });
+  axios
+    .get(`${baseURL}/api/users/${id}/todos`, headers)
+    .then((response) => {
+      dispatch({ type: TODOS_SUCCESS, payload: response.data });
+    })
+    .catch((error) => {
+      dispatch({ type: TODOS_FAILURE, payload: error.message });
     });
 };

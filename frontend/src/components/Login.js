@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 import Typography from "@material-ui/core/Typography/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 import validate from "./validate";
-import asyncValidate from "./AsyncValidate";
 import "../styles/form.css";
 const renderField = ({
   input,

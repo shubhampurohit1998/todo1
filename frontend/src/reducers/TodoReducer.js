@@ -8,7 +8,6 @@ import {
   DELETE_TODO,
   UPDATE_TODO,
 } from "../constants/index";
-import _ from "lodash";
 const initialState = {
   loading: false,
   error: null,
