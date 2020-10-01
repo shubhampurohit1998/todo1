@@ -14,7 +14,7 @@ from .permissions import AgentPermissions, IsOwnerOrAgent, IsInstanceOwner, User
 from .paginators import TodoPagination, UserPagination
 
 
-class UserListCreateDetialView(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
+class UserListCreateDetialView(mixins.ListModelMixin,  mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
     filter_backends = (SearchFilter, OrderingFilter)
@@ -73,15 +73,33 @@ class TodoDetailViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.R
         except KeyError:
             return (permissions.IsAuthenticated(),)
 
-    @action(detail=False, methods=['GET'])
-    def get_todos(self, request, pk=None):
-        queryset = self.get_queryset().filter(user=request.user).order_by('-created_at')
-        page = self.paginate_queryset(queryset)
-        if page is not None:
+    @action(detail=False, methods=['GET'], url_path="todos_active", url_name="acitve_todos")
+    def get_todos_active(self, request, pk=None):
+        try:
+            queryset = self.get_queryset().filter(
+                user=request.user).order_by('-created_at')
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
             serializer = self.get_serializer(queryset, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception:
+            return Response({'error': "Bad request"})
+
+    @action(detail=False, methods=['GET'],  url_path="todos_complete", url_name="todos_complete")
+    def get_todos_completed(self, request):
+        try:
+            queryset = self.get_queryset().filter(
+                user=request.user, is_complete=True).order_by('-updated_at')
+            page = self.paginate_queryset(queryset)
+            if page is not None:
+                serializer = self.get_serializer(page, many=True)
+                return self.get_paginated_response(serializer.data)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception:
+            return Response({'error': "Bad request"})
 
     def create(self, request, *args, **kwargs):
         user = None

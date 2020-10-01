@@ -7,11 +7,13 @@ import {
   TODO_CREATED,
   DELETE_TODO,
   UPDATE_TODO,
+  COMPLETE_TODO,
 } from "../constants/index";
 const initialState = {
   loading: false,
   error: null,
   todos: [],
+  todos_completed: [],
   selectedTodo: [],
 };
 
@@ -64,6 +66,15 @@ const createTodo = (state, action) =>
     todos: [action.payload, ...state.todos],
   });
 
+const completeTodo = (state, action) =>
+  updateObject(state, {
+    loading: false,
+    todos_completed: action.payload,
+    error: null,
+  });
+
+
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case TODOS_REQUEST:
@@ -80,6 +91,8 @@ const reducer = (state = initialState, action) => {
       return createTodo(state, action);
     case UPDATE_TODO:
       return updateTodo(state, action);
+    case COMPLETE_TODO:
+      return completeTodo(state, action);
     default:
       return state;
   }

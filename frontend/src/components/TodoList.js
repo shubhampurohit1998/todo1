@@ -11,10 +11,9 @@ import { useHistory } from "react-router-dom";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
 import RadioButtonUncheckedRoundedIcon from "@material-ui/icons/RadioButtonUncheckedRounded";
 import { Typography } from "@material-ui/core";
-// import StarRoundedIcon from "@material-ui/icons/StarRounded";
-// import StarOutlineRoundedIcon from "@material-ui/icons/StarOutlineRounded";
 import ExpandMoreRoundedIcon from "@material-ui/icons/ExpandMoreRounded";
 import ChevronRightRoundedIcon from "@material-ui/icons/ChevronRightRounded";
+import _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,8 +36,8 @@ const TodoList = (props) => {
 
   const [openCompleteList, setOpenCompleteList] = useState(true);
 
-  const activeList = todos.map((todo) =>
-    !todo.is_complete ? (
+  const list = (todo_list) =>
+    todo_list.map((todo) => (
       <div key={todo.id}>
         <ListItem alignItems="flex-start">
           {todo.is_complete ? (
@@ -71,49 +70,24 @@ const TodoList = (props) => {
         </ListItem>
         <Divider variant="inset" component="li" />
       </div>
-    ) : null
+    ));
+
+  const activeList = todos.filter((item) => item.is_complete === false);
+  const completeList = _.difference(todos, activeList);
+  const sortedCompleteList = _.orderBy(
+    completeList,
+    (item) => {
+      return new Date(item.updated_at);
+    },
+    ["desc"]
   );
 
-  const completeList = todos.map((todo) =>
-    todo.is_complete ? (
-      <div key={todo.id}>
-        <ListItem alignItems="flex-start">
-          {todo.is_complete ? (
-            <>
-              <span onClick={() => markComplete(todo)}>
-                <CheckCircleRoundedIcon color="primary" />
-              </span>
-              <ListItemText
-                primary={<s>{todo.title}</s>}
-                secondary={"Created " + moment(todo.created_at).fromNow()}
-                onClick={() => gotoTodo(todo.id)}
-              />
-            </>
-          ) : (
-            <>
-              <span onClick={() => markComplete(todo)}>
-                <RadioButtonUncheckedRoundedIcon />
-              </span>
-              <ListItemText
-                primary={todo.title}
-                secondary={"Created " + moment(todo.created_at).fromNow()}
-                onClick={() => gotoTodo(todo.id)}
-              />
-            </>
-          )}
-
-          <span onClick={() => deleteTodo(todo)}>
-            <DeleteIcon color="action" fontSize="large" />
-          </span>
-        </ListItem>
-        <Divider variant="inset" component="li" />
-      </div>
-    ) : null
-  );
+  // console.log(completeList);
+  // console.log(sortedCompleteList);
 
   return (
     <List className={classes.root}>
-      {activeList}
+      {list(activeList)}
       <Typography variant="inherit">
         {openCompleteList ? (
           <span onClick={() => setOpenCompleteList(!openCompleteList)}>
@@ -126,7 +100,7 @@ const TodoList = (props) => {
         )}
         Completed
       </Typography>
-      {openCompleteList ? completeList : null}
+      {openCompleteList ? list(sortedCompleteList) : null}
     </List>
   );
 };

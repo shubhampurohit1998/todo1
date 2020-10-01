@@ -16,7 +16,10 @@ class Home extends React.Component {
   };
 
   componentDidMount() {
-    if (this.props.isAuthenticated) this.props.getTodo();
+    if (this.props.isAuthenticated) {
+      this.props.getTodo();
+      this.props.getTodoComplete();
+    }
   }
 
   render() {

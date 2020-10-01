@@ -18,6 +18,7 @@ import {
   PROFILE_SUCCESS,
   PROFILE_FAILURE,
   SELECTED_USER,
+  COMPLETE_TODO,
 } from "../constants/index";
 import { baseURL, headers } from "../utility/index";
 import _ from "lodash";
@@ -57,10 +58,22 @@ export const logout = () => (dispatch) => {
 export const getTodo = () => (dispatch) => {
   dispatch({ type: TODOS_REQUEST });
   axios
-    .get(`${baseURL}/api/todos/get_todos`, headers)
+    .get(`${baseURL}/api/todos/todos_active`, headers)
     .then((response) => {
       console.log(response);
       dispatch({ type: TODOS_SUCCESS, payload: response.data.results });
+    })
+    .catch((error) => {
+      dispatch({ type: TODOS_FAILURE, payload: error.message });
+    });
+};
+
+export const getTodoComplete = () => (dispatch) => {
+  dispatch({ type: TODOS_REQUEST });
+  axios
+    .get(`${baseURL}/api/todos_complete`)
+    .then((response) => {
+      dispatch({ type: COMPLETE_TODO, payload: response.data.results });
     })
     .catch((error) => {
       dispatch({ type: TODOS_FAILURE, payload: error.message });

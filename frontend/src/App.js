@@ -25,6 +25,7 @@ import {
   getProfile,
   getSelectedUser,
   getUserTodo,
+  getTodoComplete,
 } from "./actions/index";
 import { useHistory } from "react-router-dom";
 // import ProtectedRoute from "./protected.route/Protected";
@@ -47,6 +48,7 @@ function App(props) {
     getSelectedTodo,
     profile,
     getProfile,
+    getTodoComplete,
   } = props;
 
   useEffect(() => {
@@ -75,6 +77,7 @@ function App(props) {
                     createTodo={createTodo}
                     deleteTodo={deleteTodo}
                     markComplete={markComplete}
+                    getTodoComplete={getTodoComplete}
                   />
                 );
               } else {
@@ -170,6 +173,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     getTodo: () => {
       dispatch(getTodo());
+    },
+    getTodoComplete: () => {
+      dispatch(getTodoComplete());
     },
     createTodo: (values) => {
       dispatch(createTodo(values));

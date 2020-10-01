@@ -11,7 +11,6 @@ const User = (props) => {
     getUserTodo(id);
   }, []);
 
-  // console.log(selectedUser);
   return (
     <div>
       <Grid container direction="column" justify="center" alignItems="center">
