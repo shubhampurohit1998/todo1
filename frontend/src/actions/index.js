@@ -22,12 +22,13 @@ import {
 } from "../constants/index";
 import { baseURL, headers } from "../utility/index";
 import _ from "lodash";
-
+import { SubmissionError } from "redux-form";
 export const authCheckState = () => (dispatch) => {
   dispatch({ type: AUTH_REQUEST });
   const token = localStorage.getItem("token");
   if (token !== undefined) {
     dispatch({ type: AUTH_SUCCESS, payload: token });
+    dispatch(getProfile());
   } else {
     dispatch({ type: AUTH_FAIL, payload: "Authentication failed" });
   }
@@ -40,19 +41,27 @@ export const login = (values) => (dispatch) => {
   axios
     .post(`${baseURL}/auth/login/`, values)
     .then((response) => {
-      dispatch({ type: AUTH_SUCCESS, payload: response.data.access_token });
       localStorage.setItem("token", response.data.access_token);
-      dispatch(getProfile());
+      dispatch({ type: AUTH_SUCCESS, payload: response.data.access_token });
+      window.location.reload(true);
     })
     .catch((error) => {
-      console.log(error.message);
+      const errors = error.response.data;
       dispatch({ type: AUTH_FAIL, payload: error.message });
+      if ("non_field_errors" in errors) {
+        errors._error = errors.non_field_errors;
+      }
+      throw new SubmissionError({
+        email: "Email or password is wrong",
+        _error: "Login failed!",
+      });
     });
 };
 
 export const logout = () => (dispatch) => {
   dispatch({ type: AUTH_LOGOUT });
   localStorage.removeItem("token");
+  window.location.reload(true);
 };
 
 export const getTodo = () => (dispatch) => {
@@ -80,17 +89,17 @@ export const getTodoComplete = () => (dispatch) => {
     });
 };
 
-export const createTodo = (values) => (dispatch) => {
+export const createTodo = (values) => (dispatch, getState) => {
   const obj = {
     title: values.todo,
   };
-  console.log(obj);
+  const todo_list = getState().todo.todos;
   dispatch({ type: TODOS_REQUEST });
   axios
     .post(`${baseURL}/api/todos`, obj, headers)
     .then((response) => {
-      console.log(response.data);
-      dispatch({ type: TODO_CREATED, payload: response.data });
+      todo_list.unshift(response.data);
+      dispatch({ type: TODO_CREATED, payload: todo_list });
     })
     .catch((error) => {
       console.log(error);
@@ -198,5 +207,32 @@ export const getUserTodo = (id) => (dispatch) => {
     })
     .catch((error) => {
       dispatch({ type: TODOS_FAILURE, payload: error.message });
+    });
+};
+
+export const searchTodo = (params) => (dispatch, getState) => {
+  console.log(params);
+  dispatch({ type: TODOS_REQUEST });
+  axios
+    .get(`${baseURL}/api/todos/search-todo?title=${params.title}`, headers)
+    .then((response) => {
+      dispatch({ type: TODOS_SUCCESS, payload: response.data.results });
+    })
+    .catch((error) => {
+      dispatch({ type: TODOS_FAILURE, payload: error.message });
+    });
+};
+
+export const updateProfile = (values) => (dispatch) => {
+  console.log(values);
+  const id = values.id;
+  dispatch({ type: PROFILE_REQUEST });
+  axios
+    .patch(`${baseURL}/api/users/${id}`, values, headers)
+    .then((response) => {
+      dispatch({ type: PROFILE_SUCCESS, payload: values });
+    })
+    .catch((error) => {
+      dispatch({ type: PROFILE_FAILURE, payload: error.message });
     });
 };

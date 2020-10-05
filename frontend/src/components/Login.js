@@ -2,13 +2,31 @@ import React from "react";
 import TextField from "@material-ui/core/TextField/TextField";
 import Grid from "@material-ui/core/Grid/Grid";
 import ArrowForwardOutlinedIcon from "@material-ui/icons/ArrowForwardOutlined";
-import { reduxForm, Field } from "redux-form";
+import { reduxForm, Field, hasSubmitFailed } from "redux-form";
 import Button from "@material-ui/core/Button/Button";
 import { Link } from "react-router-dom";
 import Typography from "@material-ui/core/Typography/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 import validate from "./validate";
 import "../styles/form.css";
+
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+import { makeStyles } from "@material-ui/core/styles";
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: "100%",
+    "& > * + *": {
+      marginTop: theme.spacing(2),
+    },
+  },
+}));
+
 const renderField = ({
   input,
   label,
@@ -34,18 +52,38 @@ const renderField = ({
 );
 
 class Login extends React.Component {
+  // const handleClose = (event, reason) => {
+  //   if (reason === 'clickaway') {
+  //     return;
+  //   }
+
+  //   setOpen(false);
+  // };
   render() {
     const {
+      error,
       handleSubmit,
       pristine,
       reset,
       submitting,
       invalid,
       submitSucceeded,
+      submitFailed,
     } = this.props;
     const { login } = this.props;
     return (
       <div>
+        {submitSucceeded ? (
+          <div>
+            <Snackbar open={submitSucceeded} autoHideDuration={6000}>
+              <Alert severity="success">You are successfully logged in.</Alert>
+            </Snackbar>
+          </div>
+        ) : submitFailed ? (
+          <Snackbar open={submitSucceeded} autoHideDuration={6000}>
+            <Alert severity="danger">Login failed!</Alert>
+          </Snackbar>
+        ) : null}
         <Grid container direction="row" alignItems="baseline" className="form">
           <Grid item sm></Grid>
           <Grid item sm alignItems="center">
@@ -67,6 +105,7 @@ class Login extends React.Component {
                 component={renderField}
                 className="form-field"
               />
+              {error && <strong>{error}</strong>}
               <Button
                 type="submit"
                 color="primary"

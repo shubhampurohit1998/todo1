@@ -63,7 +63,7 @@ const createTodo = (state, action) =>
   updateObject(state, {
     loading: false,
     error: null,
-    todos: [action.payload, ...state.todos],
+    todos: action.payload,
   });
 
 const completeTodo = (state, action) =>
@@ -72,8 +72,6 @@ const completeTodo = (state, action) =>
     todos_completed: action.payload,
     error: null,
   });
-
-
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {

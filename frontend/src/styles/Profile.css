@@ -8,3 +8,16 @@
   height: 350px;
   border-radius: 15px;
 }
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-formField {
+  margin-bottom: 10px;
+}
+
+.profile-formError{
+  color: red;
+}

@@ -21,14 +21,14 @@ class UserSerializer(serializers.ModelSerializer):
     # include 'todos' in fields if want to get user todos along with user
     class Meta:
         model = models.User
-        fields = ('id', 'email', 'username', 'first_name', 'last_name',
-                  'is_user', 'is_agent',)
+        fields = ('id', 'username', 'email', 'username', 'first_name', 'last_name',
+                  'is_user', 'is_agent', 'is_active')
 
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
-        fields = ('id', 'email', 'first_name', 'last_name',
+        fields = ('id', 'username', 'email', 'first_name', 'last_name',
                   'is_user', 'is_agent')
 
 

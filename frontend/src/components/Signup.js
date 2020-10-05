@@ -66,13 +66,18 @@ class Signup extends React.Component {
       reset,
       submitting,
       invalid,
+      history,
       submitFailed,
+      submitSucceeded,
     } = this.props;
+    if (submitSucceeded) {
+      history.push("/login");
+    }
     return (
       <div>
         <Grid container direction="row" alignItems="baseline" className="form">
           <Grid item sm></Grid>
-          <Grid item sm alignItems="center">
+          <Grid item sm >
             <Typography component="h1" variant="h3" className="form-heading">
               Signup
             </Typography>

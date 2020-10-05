@@ -26,6 +26,8 @@ import {
   getSelectedUser,
   getUserTodo,
   getTodoComplete,
+  searchTodo,
+  updateProfile,
 } from "./actions/index";
 import { useHistory } from "react-router-dom";
 // import ProtectedRoute from "./protected.route/Protected";
@@ -46,8 +48,6 @@ function App(props) {
     isAuthenticated,
     markComplete,
     getSelectedTodo,
-    profile,
-    getProfile,
     getTodoComplete,
   } = props;
 
@@ -118,7 +118,7 @@ function App(props) {
             path="/profile"
             render={() => {
               if (isAuthenticated) {
-                return <Profile profile={profile} getProfile={getProfile} />;
+                return <Profile {...props} />;
               } else {
                 return <Redirect to="/login" />;
               }
@@ -130,6 +130,8 @@ function App(props) {
             render={() => {
               if (isAuthenticated) {
                 return <Users {...props} />;
+              } else {
+                return <Redirect to="/login" />;
               }
             }}
           />
@@ -168,8 +170,8 @@ const mapDispatchToProps = (dispatch) => {
     tryAutoLogin: () => {
       dispatch(authCheckState());
     },
-    logout: () => {
-      dispatch(logout());
+    logout: (history) => {
+      dispatch(logout(history));
     },
     getTodo: () => {
       dispatch(getTodo());
@@ -200,6 +202,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     getUserTodo: (id) => {
       dispatch(getUserTodo(id));
+    },
+    searchTodo: (params) => {
+      dispatch(searchTodo(params));
+    },
+    updateProfile: (values) => {
+      dispatch(updateProfile(values));
     },
   };
 };

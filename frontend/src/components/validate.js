@@ -23,6 +23,19 @@ const validate = (values) => {
   if (!values.user_type) {
     errors.user_type = "Must choose user type";
   }
+  if (!values.todo) {
+    errors.todo = "Todo can't be empty";
+  }
+  if (!values.first_name) {
+    errors.first_name = "First name can't be null";
+  } else if (values.first_name.length < 3) {
+    errors.first_name = "Name must be 3 letter long";
+  }
+  if (!values.last_name) {
+    errors.last_name = "Last name can't be null";
+  } else if (values.last_name.length < 3) {
+    errors.last_name = "Last name must be 3 letter long";
+  }
   return errors;
 };
 

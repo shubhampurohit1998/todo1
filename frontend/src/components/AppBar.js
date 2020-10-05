@@ -113,7 +113,12 @@ const useStyles = makeStyles((theme) => ({
 const Header = (props) => {
   const classes = useStyles();
   const history = useHistory();
-  const { logout, isAuthenticated, profile } = props;
+  const { logout, isAuthenticated, searchTodo } = props;
+
+  const {
+    profile: { data },
+  } = props;
+
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
@@ -123,6 +128,14 @@ const Header = (props) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleChange = (event) => {
+    console.log("Handling change");
+    if (event.target.value) {
+      searchTodo({ title: event.target.value });
+    }
+  };
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -151,6 +164,7 @@ const Header = (props) => {
                 input: classes.inputInput,
               }}
               inputProps={{ "aria-label": "search" }}
+              onChange={(event) => handleChange(event)}
             />
           </div>
           <IconButton edge="end">
@@ -175,7 +189,7 @@ const Header = (props) => {
                   open={Boolean(anchorEl)}
                   onClose={handleClose}
                 >
-                  {/* {profile.is_agent ? (
+                  {data && data.is_agent ? (
                     <StyledMenuItem
                       onClick={() => {
                         handleClose();
@@ -187,9 +201,9 @@ const Header = (props) => {
                       </ListItemIcon>
                       <ListItemText primary="Users" />
                     </StyledMenuItem>
-                  ) : null} */}
+                  ) : null}
                   {/* Comment out above code when done with reset redux state and comment below code */}
-                  <StyledMenuItem
+                  {/* <StyledMenuItem
                     onClick={() => {
                       handleClose();
                       history.push("/users");
@@ -199,12 +213,6 @@ const Header = (props) => {
                       <PeopleRoundedIcon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText primary="Users" />
-                  </StyledMenuItem>
-                  {/* <StyledMenuItem>
-                    <ListItemIcon>
-                      <DraftsIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText primary="Drafts" />
                   </StyledMenuItem> */}
                   <StyledMenuItem onClick={logout}>
                     <ListItemIcon>

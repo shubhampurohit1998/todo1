@@ -35,7 +35,7 @@ const profileFailure = (state, action) =>
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case PROFILE_REQUEST:
-      return profileRequest(state, action);
+      return profileRequest(state);
     case PROFILE_SUCCESS:
       return profileSuccess(state, action);
     case PROFILE_FAILURE:

@@ -1,5 +1,7 @@
 import { baseURL } from "../utility/index";
 import axios from "axios";
+import { SubmissionError } from "redux-form";
+
 // const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // const asyncValidate = (values /*, dispatch */) => {
@@ -31,11 +33,16 @@ const asyncValidate = (values) => {
   axios
     .post(`${baseURL}/auth/registration/`, obj)
     .then((response) => {
-      console.log(response.data);
+      console.log(response.data);   
     })
     .catch((error) => {
+      const errors = error.response.data;
       console.log(error);
-      throw { email: "Something went wrong" };
+
+      // if ("non_field_errors" in errors) {
+      //   errors._error = errors.non_field_errors;
+      // }
+      // throw new SubmissionError(errors);
     });
 };
 

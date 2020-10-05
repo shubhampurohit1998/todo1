@@ -113,9 +113,17 @@ class TodoDetailViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.R
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST,)
 
-    @action(detail=False, methods=["GET"])
-    def search_todos(self, request):
+    @action(detail=False, methods=["GET"], url_name="search-todo", url_path="search-todo")
+    def search_todos(self, request, *args, **kwargs):
+        # import pdb
+        # pdb.set_trace()
         queryset = self.get_queryset().filter(user=request.user,
-                                              title__icontains=request.data.get('title')).order_by('-created_at')
+                                              title__icontains=request.query_params.get('title')).order_by('-created_at')
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # @action(detail=False, methods=['GET'])

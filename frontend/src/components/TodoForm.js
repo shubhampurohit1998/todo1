@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button/Button";
 import SendIcon from "@material-ui/icons/Send";
 import TextField from "@material-ui/core/TextField/TextField";
 import { reduxForm, Field, reset } from "redux-form";
-
+import validate from "./validate";
 const todoFormStyle = {
   padding: "10px 10px 20px 10px",
   display: "flex",
@@ -67,6 +67,7 @@ class TodoForm extends Component {
 
 TodoForm = reduxForm({
   form: "todo-form",
+  validate,
 })(TodoForm);
 
 export default TodoForm;
