@@ -28,6 +28,7 @@ import {
   getTodoComplete,
   searchTodo,
   updateProfile,
+  getNotifications,
 } from "./actions/index";
 import { useHistory } from "react-router-dom";
 // import ProtectedRoute from "./protected.route/Protected";
@@ -49,12 +50,18 @@ function App(props) {
     markComplete,
     getSelectedTodo,
     getTodoComplete,
+    getNotifications,
+    getProfile,
   } = props;
 
   useEffect(() => {
     tryAutoLogin();
-    getTodo();
-  }, []);
+    if (isAuthenticated) {
+      getTodo();
+      getNotifications();
+      getProfile();
+    }
+  }, [isAuthenticated]);
 
   const history = useHistory();
 
@@ -159,6 +166,7 @@ const mapStateToProps = (state) => {
     isAuthenticated: state.auth.token ? true : false,
     user: state.user,
     profile: state.profile,
+    notification: state.notification,
   };
 };
 
@@ -208,6 +216,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     updateProfile: (values) => {
       dispatch(updateProfile(values));
+    },
+    getNotifications: () => {
+      dispatch(getNotifications());
     },
   };
 };

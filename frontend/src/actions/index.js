@@ -19,6 +19,9 @@ import {
   PROFILE_FAILURE,
   SELECTED_USER,
   COMPLETE_TODO,
+  NOTIFICATION_REQUEST,
+  NOTIFICATION_SUCCESS,
+  NOTIFICATION_FAILURE,
 } from "../constants/index";
 import { baseURL, headers } from "../utility/index";
 import _ from "lodash";
@@ -28,7 +31,6 @@ export const authCheckState = () => (dispatch) => {
   const token = localStorage.getItem("token");
   if (token !== undefined) {
     dispatch({ type: AUTH_SUCCESS, payload: token });
-    dispatch(getProfile());
   } else {
     dispatch({ type: AUTH_FAIL, payload: "Authentication failed" });
   }
@@ -69,7 +71,6 @@ export const getTodo = () => (dispatch) => {
   axios
     .get(`${baseURL}/api/todos/todos_active`, headers)
     .then((response) => {
-      console.log(response);
       dispatch({ type: TODOS_SUCCESS, payload: response.data.results });
     })
     .catch((error) => {
@@ -234,5 +235,17 @@ export const updateProfile = (values) => (dispatch) => {
     })
     .catch((error) => {
       dispatch({ type: PROFILE_FAILURE, payload: error.message });
+    });
+};
+
+export const getNotifications = () => (dispatch) => {
+  dispatch({ type: NOTIFICATION_REQUEST });
+  axios
+    .get(`${baseURL}/api/notifications/my_notifications`, headers)
+    .then((response) => {
+      dispatch({ type: NOTIFICATION_SUCCESS, payload: response.data });
+    })
+    .catch((error) => {
+      dispatch({ type: NOTIFICATION_FAILURE, payload: error.message });
     });
 };

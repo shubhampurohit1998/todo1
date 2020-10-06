@@ -20,8 +20,10 @@ import ListItemText from "@material-ui/core/ListItemText";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import PeopleRoundedIcon from "@material-ui/icons/PeopleRounded";
 import ExitToAppRoundedIcon from "@material-ui/icons/ExitToAppRounded";
+// For Notification
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import Badge from "@material-ui/core/Badge";
+import NotificationPoper from "./NotificationPoper";
 
 const StyledMenu = withStyles({
   paper: {
@@ -177,8 +179,12 @@ const Header = (props) => {
                   <AccountCircleRoundedIcon />
                 </NavLink>
                 <NavLink to="/">
-                  <Badge badgeContent={4} color="secondary">
-                    <NotificationsIcon className={classes.navLinkStyle} />
+                  <Badge
+                    badgeContent={4}
+                    color="secondary"
+                    className={classes.navLinkStyle}
+                  >
+                    <NotificationPoper {...props} />
                   </Badge>
                 </NavLink>
                 <IconButton

@@ -38,7 +38,7 @@ class UserListCreateDetialView(mixins.ListModelMixin,  mixins.RetrieveModelMixin
     def get_user_profile(self, request, pk=None):
         try:
             queryset = self.get_queryset().get(id=request.user.id)
-            serializer = serializers.ProfileSerializer(queryset, many=False)
+            serializer = self.get_serializer(queryset, many=False)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except(User.DoesNotExist):
             return Response({"error": 'The user does not exist'}, status=status.HTTP_204_NO_CONTENT)

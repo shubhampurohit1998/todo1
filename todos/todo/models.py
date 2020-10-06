@@ -26,6 +26,7 @@ class Todo(models.Model):
         return self.title
 
 
+
 class Notification(models.Model):
     seen = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
