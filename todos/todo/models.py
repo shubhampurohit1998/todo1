@@ -24,3 +24,15 @@ class Todo(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Notification(models.Model):
+    seen = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    seen_by = models.ForeignKey(
+        User, related_name="seen_by", on_delete=models.SET_NULL, null=True, verbose_name="Seen by")
+    user = models.ForeignKey(
+        User, related_name="user", on_delete=models.CASCADE, verbose_name="User")
+
+    def __str__(self):
+        return self.user.username

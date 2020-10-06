@@ -61,3 +61,11 @@ class CustomRegisterSerializer(RegisterSerializer):
 
 class CustomRegisterView(RegisterView):
     serializer_class = CustomRegisterSerializer
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Notification
+        fields = '__all__'
+        # depth = 1

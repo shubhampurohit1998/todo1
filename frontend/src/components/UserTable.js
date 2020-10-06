@@ -26,7 +26,6 @@ const columns = [
   },
 ];
 
-
 export default function DataTable(props) {
   const history = useHistory();
 

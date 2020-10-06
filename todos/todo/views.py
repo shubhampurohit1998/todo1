@@ -6,19 +6,19 @@ from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
-from .models import User, Todo
+from .models import User, Todo, Notification
 from . import serializers
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.contrib.auth.models import Group
 from .permissions import AgentPermissions, IsOwnerOrAgent, IsInstanceOwner, UserCanHaveTodos
-from .paginators import TodoPagination, UserPagination
+from .paginators import TodoPagination, UserPagination, NotificationPagination
 
 
 class UserListCreateDetialView(mixins.ListModelMixin,  mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
     filter_backends = (SearchFilter, OrderingFilter)
-    pagination_class = UserPagination
+    # pagination_class = UserPagination
     search_fields = ['email', 'first_name']
     permission_classes_by_action = {
         'list': [AgentPermissions],
@@ -87,20 +87,6 @@ class TodoDetailViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.R
         except Exception:
             return Response({'error': "Bad request"})
 
-    @action(detail=False, methods=['GET'],  url_path="todos_complete", url_name="todos_complete")
-    def get_todos_completed(self, request):
-        try:
-            queryset = self.get_queryset().filter(
-                user=request.user, is_complete=True).order_by('-updated_at')
-            page = self.paginate_queryset(queryset)
-            if page is not None:
-                serializer = self.get_serializer(page, many=True)
-                return self.get_paginated_response(serializer.data)
-            serializer = self.get_serializer(queryset, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception:
-            return Response({'error': "Bad request"})
-
     def create(self, request, *args, **kwargs):
         user = None
         try:
@@ -127,3 +113,28 @@ class TodoDetailViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.R
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     # @action(detail=False, methods=['GET'])
+
+
+class NotificationViewSet(viewsets.ModelViewSet):
+    queryset = Notification.objects.all()
+    serializer_class = serializers.NotificationSerializer
+    pagination_class = NotificationPagination
+    permission_classes_by_action = {
+        'my_notifications': [IsInstanceOwner]
+    }
+
+    def get_permissions(self):
+        try:
+            return [permission() for permission in self.permission_classes_by_action[self.action]]
+        except KeyError:
+            return (permissions.IsAuthenticated(),)
+
+    @action(detail=False, methods=['GET'], url_name="my-notifications")
+    def my_notifications(self, request, *args, **kwargs):
+        queryset = self.get_queryset().filter(user=request.user).order_by('-created_at')
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

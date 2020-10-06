@@ -20,6 +20,9 @@ import ListItemText from "@material-ui/core/ListItemText";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import PeopleRoundedIcon from "@material-ui/icons/PeopleRounded";
 import ExitToAppRoundedIcon from "@material-ui/icons/ExitToAppRounded";
+import NotificationsIcon from "@material-ui/icons/Notifications";
+import Badge from "@material-ui/core/Badge";
+
 const StyledMenu = withStyles({
   paper: {
     border: "1px solid #d3d4d5",
@@ -173,6 +176,11 @@ const Header = (props) => {
                 <NavLink to="/profile" className={classes.navLinkStyle}>
                   <AccountCircleRoundedIcon />
                 </NavLink>
+                <NavLink to="/">
+                  <Badge badgeContent={4} color="secondary">
+                    <NotificationsIcon className={classes.navLinkStyle} />
+                  </Badge>
+                </NavLink>
                 <IconButton
                   aria-label="more"
                   aria-controls="long-menu"
@@ -202,18 +210,6 @@ const Header = (props) => {
                       <ListItemText primary="Users" />
                     </StyledMenuItem>
                   ) : null}
-                  {/* Comment out above code when done with reset redux state and comment below code */}
-                  {/* <StyledMenuItem
-                    onClick={() => {
-                      handleClose();
-                      history.push("/users");
-                    }}
-                  >
-                    <ListItemIcon>
-                      <PeopleRoundedIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText primary="Users" />
-                  </StyledMenuItem> */}
                   <StyledMenuItem onClick={logout}>
                     <ListItemIcon>
                       <ExitToAppRoundedIcon fontSize="small" />

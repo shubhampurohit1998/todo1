@@ -36,6 +36,9 @@ const validate = (values) => {
   } else if (values.last_name.length < 3) {
     errors.last_name = "Last name must be 3 letter long";
   }
+  if (!values.todo) {
+    errors.todo = "Add some text for todo";
+  }
   return errors;
 };
 

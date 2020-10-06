@@ -179,7 +179,7 @@ export const getUsersList = () => (dispatch) => {
   axios
     .get(`${baseURL}/api/users`, headers)
     .then((response) => {
-      dispatch({ type: USER_SUCCESS, payload: response.data.results });
+      dispatch({ type: USER_SUCCESS, payload: response.data });
     })
     .catch((error) => {
       dispatch({ type: USER_FAILURE, payload: error.message });

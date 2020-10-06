@@ -9,7 +9,7 @@ const { updateObject } = require("../utility");
 const initialState = {
   loading: false,
   error: null,
-  users: [],
+  users: {},
   selectedUser: [],
 };
 
@@ -17,7 +17,7 @@ const userRequest = (state, action) =>
   updateObject(state, {
     loading: true,
     error: null,
-    users: [],
+    users: {},
   });
 
 const userSuccess = (state, action) =>
@@ -31,7 +31,7 @@ const userFailure = (state, action) =>
   updateObject(state, {
     loading: false,
     error: action.payload,
-    users: [],
+    users: {},
   });
 
 const selectedUser = (state, action) =>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -8,7 +8,12 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid/Grid";
 import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
+import Spinner from "@material-ui/core/CircularProgress/CircularProgress";
 import moment from "moment";
+import FormControl from "@material-ui/core/FormControl/FormControl";
+import InputLabel from "@material-ui/core/InputLabel/InputLabel";
+import FilledInput from "@material-ui/core/FilledInput/FilledInput";
+
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
@@ -30,6 +35,7 @@ const useStyles = makeStyles({
 const TodoItem = (props) => {
   const classes = useStyles();
   const { id } = useParams();
+  const [update, setUpdate] = useState(false);
   const {
     getSelectedTodo,
     todo: { selectedTodo, loading, error },
@@ -41,7 +47,7 @@ const TodoItem = (props) => {
   return (
     <Grid container direction="row" justify="center" alignItems="center">
       {loading && !error ? (
-        <div>Loading...</div>
+        <Spinner />
       ) : error ? (
         <div>Something went wrong!</div>
       ) : selectedTodo.length > 0 ? (
@@ -56,9 +62,29 @@ const TodoItem = (props) => {
                 >
                   Created {moment(item.created_at).fromNow()}
                 </Typography>
-                <Typography variant="h5" component="h2">
-                  {item.title}
-                </Typography>
+                {update ? (
+                  <FormControl
+                    fullWidth
+                    className={classes.margin}
+                    variant="filled"
+                  >
+                    <InputLabel htmlFor="filled-adornment-todo">
+                      Todo
+                    </InputLabel>
+                    <FilledInput
+                      id="filled-adornment-todo"
+                      value={item.title}
+                      // onChange={handleChange("amount")}
+                      // startAdornment={
+                      //   <InputAdornment position="start">$</InputAdornment>
+                      // }
+                    />
+                  </FormControl>
+                ) : (
+                  <Typography variant="h5" component="h2">
+                    {item.title}
+                  </Typography>
+                )}
                 <Typography className={classes.title} color="textSecondary">
                   Status{" "}
                   {!item.is_complete ? (
@@ -71,10 +97,31 @@ const TodoItem = (props) => {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size="small">Update</Button>
-                <Button size="small" onClick={() => markComplete(item)}>
-                  {item.is_complete ? "Mark as not complete" : "Mark as done"}
-                </Button>
+                {update ? (
+                  <>
+                    <Button size="small" color="primary" variant="contained">
+                      Save
+                    </Button>
+                    <Button
+                      size="small"
+                      color="secondary"
+                      onClick={() => setUpdate(!update)}
+                    >
+                      Cancel
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button size="small" onClick={() => setUpdate(!update)}>
+                      Update
+                    </Button>
+                    <Button size="small" onClick={() => markComplete(item)}>
+                      {item.is_complete
+                        ? "Mark as not complete"
+                        : "Mark as done"}
+                    </Button>
+                  </>
+                )}
               </CardActions>
             </Card>
           </Grid>
