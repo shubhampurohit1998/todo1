@@ -66,46 +66,44 @@ export default function SimplePopover(props) {
         }}
       >
         {/* <Typography className={classes.typography}> */}
-          <List className={classes.root}>
-            {loading ? (
-              <Spinner size="small" />
-            ) : error ? (
-              <div>Something went wrong!</div>
-            ) : (
-              data.reults &&
-              data.reults.map((item) => (
-                <>
-                  <ListItem alignItems="flex-start">
-                    <ListItemAvatar>
-                      <Avatar
-                        alt="Remy Sharp"
-                        src="/static/images/avatar/1.jpg"
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary="Brunch this weekend?"
-                      secondary={
-                        <React.Fragment>
-                          <Typography
-                            component="span"
-                            variant="body2"
-                            className={classes.inline}
-                            color="textPrimary"
-                          >
-                            Ali Connors
-                          </Typography>
-                          {
-                            " — I'll be in your neighborhood doing errands this…"
-                          }
-                        </React.Fragment>
-                      }
+        <List className={classes.root}>
+          {loading ? (
+            <Spinner size="small" />
+          ) : error ? (
+            <div>Something went wrong!</div>
+          ) : (
+            data.results &&
+            data.results.map((item) => (
+              <div key={item.id}>
+                <ListItem alignItems="flex-start">
+                  <ListItemAvatar>
+                    <Avatar
+                      alt="Remy Sharp"
+                      src="/static/images/avatar/1.jpg"
                     />
-                  </ListItem>
-                  <Divider variant="inset" component="li" />
-                </>
-              ))
-            )}
-          </List>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={item.message}
+                    secondary={
+                      <React.Fragment>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          className={classes.inline}
+                          color="textPrimary"
+                        >
+                          Ali Connors
+                        </Typography>
+                        {" — I'll be in your neighborhood doing errands this…"}
+                      </React.Fragment>
+                    }
+                  />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+              </div>
+            ))
+          )}
+        </List>
         {/* </Typography> */}
       </Popover>
     </div>

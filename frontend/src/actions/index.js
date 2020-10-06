@@ -95,7 +95,7 @@ export const createTodo = (values) => (dispatch, getState) => {
     title: values.todo,
   };
   const todo_list = getState().todo.todos;
-  dispatch({ type: TODOS_REQUEST });
+  // dispatch({ type: TODOS_REQUEST });
   axios
     .post(`${baseURL}/api/todos`, obj, headers)
     .then((response) => {
@@ -112,7 +112,7 @@ export const createTodo = (values) => (dispatch, getState) => {
 };
 
 export const deleteTodo = (todo) => (dispatch, getState) => {
-  dispatch({ type: TODOS_REQUEST });
+  // dispatch({ type: TODOS_REQUEST });
   const todo_list = getState().todo.todos;
   const new_todos = _.difference(todo_list, [todo]);
   console.log(new_todos);
@@ -128,7 +128,7 @@ export const deleteTodo = (todo) => (dispatch, getState) => {
 };
 
 export const markComplete = (todo_obj) => (dispatch, getState) => {
-  dispatch({ type: TODOS_REQUEST });
+  // dispatch({ type: TODOS_REQUEST });
   const obj = todo_obj;
   obj.is_complete = !obj.is_complete;
 
@@ -149,18 +149,41 @@ export const markComplete = (todo_obj) => (dispatch, getState) => {
     });
 };
 
-export const getSelectedTodo = (id) => (dispatch, getState) => {
-  dispatch({ type: TODOS_REQUEST });
-  // const newArray = getState().todo.selectedTodo;
+export const updateTodo = (values) => (dispatch, getState) => {
+  const todo_list = getState().todo.todos;
+  const element = _.find(todo_list, (obj) => {
+    return obj.id === values.id;
+  });
+  const index = _.indexOf(todo_list, element);
+  todo_list.splice(index, 1, values);
+
   axios
-    .get(`${baseURL}/api/todos/${id}`, headers)
+    .patch(`${baseURL}/api/todos/${values.id}`, values, headers)
     .then((response) => {
-      // newArray.push(response.data);
-      dispatch({ type: GET_SELECTED_TODO, payload: [response.data] });
+      dispatch({ type: UPDATE_TODO, payload: todo_list });
     })
     .catch((error) => {
-      dispatch({ type: TODOS_FAILURE, payload: error.message });
+      dispatch({ type: TODOS_FAILURE, error: "Todo didn't update" });
     });
+};
+
+export const getSelectedTodo = (id) => (dispatch, getState) => {
+  // Now it will pick up data from local redux store....Performance improvement
+  // dispatch({ type: TODOS_REQUEST });
+
+  const todo_list = getState().todo.todos;
+  const element = _.find(todo_list, (obj) => {
+    return obj.id === id;
+  });
+  // axios
+  //   .get(`${baseURL}/api/todos/${id}`, headers)
+  //   .then((response) => {
+  //     // newArray.push(response.data);
+  dispatch({ type: GET_SELECTED_TODO, payload: element });
+  // })
+  // .catch((error) => {
+  //   dispatch({ type: TODOS_FAILURE, payload: error.message });
+  // });
 };
 
 export const getProfile = () => (dispatch) => {

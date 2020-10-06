@@ -23,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = models.User
         fields = ('id', 'username', 'email', 'username', 'first_name', 'last_name',
                   'is_user', 'is_agent', 'is_active')
-                  
+
 
 class TodoSerializer(serializers.ModelSerializer):
 

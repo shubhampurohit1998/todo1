@@ -25,7 +25,8 @@ class UserListCreateDetialView(mixins.ListModelMixin,  mixins.RetrieveModelMixin
         'retrieve': [IsOwnerOrAgent],
         'partial_update': [IsInstanceOwner],
         'destroy': [IsInstanceOwner],
-        'update': [IsInstanceOwner]
+        'update': [IsInstanceOwner],
+        'get_user_profile': [IsInstanceOwner]
     }
 
     def get_permissions(self):

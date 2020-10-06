@@ -26,9 +26,15 @@ class Todo(models.Model):
         return self.title
 
 
+MESSAGE_CHOICES = [
+    ("WATCH", 'Viewed your profile')
+]
+
 
 class Notification(models.Model):
     seen = models.BooleanField(default=False)
+    message = models.CharField(
+        choices=MESSAGE_CHOICES, null=False, blank=False, max_length=10)
     created_at = models.DateTimeField(auto_now_add=True)
     seen_by = models.ForeignKey(
         User, related_name="seen_by", on_delete=models.SET_NULL, null=True, verbose_name="Seen by")

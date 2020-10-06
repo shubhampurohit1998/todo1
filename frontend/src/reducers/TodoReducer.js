@@ -14,7 +14,7 @@ const initialState = {
   error: null,
   todos: [],
   todos_completed: [],
-  selectedTodo: [],
+  selectedTodo: null,
 };
 
 const getTodoRequest = (state) =>

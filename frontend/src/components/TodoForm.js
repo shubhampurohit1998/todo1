@@ -5,7 +5,7 @@ import InputAdornment from "@material-ui/core/InputAdornment/InputAdornment";
 import Button from "@material-ui/core/Button/Button";
 import SendIcon from "@material-ui/icons/Send";
 import TextField from "@material-ui/core/TextField/TextField";
-import { reduxForm, Field, reset } from "redux-form";
+import { reduxForm, Field } from "redux-form";
 import validate from "./validate";
 const todoFormStyle = {
   padding: "10px 10px 20px 10px",
@@ -42,6 +42,11 @@ class TodoForm extends Component {
       submitSucceeded,
       createTodo,
     } = this.props;
+
+    if (submitSucceeded) {
+      this.props.reset();
+    }
+
     return (
       <form
         onSubmit={handleSubmit((data) => createTodo({ ...data }))}
@@ -55,7 +60,7 @@ class TodoForm extends Component {
           color="primary"
           // disabled={pristine || error || submitting}
           type="submit"
-          onClick={() => reset()}
+          // onClick={reset}
           size="small"
         >
           ADD TODO <SendIcon />

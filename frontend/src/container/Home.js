@@ -1,6 +1,6 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid/Grid";
-import TodoList from "../components/TodoList";
+import TodoList from "../components/Todo/TodoList";
 import Spinner from "@material-ui/core/CircularProgress/CircularProgress";
 import TodoForm from "../components/TodoForm";
 import "../styles/Home.css";
@@ -15,6 +15,8 @@ class Home extends React.Component {
       deleteTodo,
       createTodo,
       markComplete,
+      getSelectedTodo,
+      updateTodo,
     } = this.props;
     return (
       <Grid container direction="column" justify="center" className="home">
@@ -33,6 +35,8 @@ class Home extends React.Component {
                 todos={todos}
                 deleteTodo={deleteTodo}
                 markComplete={markComplete}
+                getSelectedTodo={getSelectedTodo}
+                updateTodo={updateTodo}
               />
             )
           ) : (

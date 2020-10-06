@@ -29,14 +29,15 @@ import {
   searchTodo,
   updateProfile,
   getNotifications,
+  updateTodo,
 } from "./actions/index";
 import { useHistory } from "react-router-dom";
 // import ProtectedRoute from "./protected.route/Protected";
-import TodoItem from "./components/TodoItem";
 import AppBar from "./components/AppBar";
 import Profile from "./components/Profile";
 import Users from "./components/UserTable";
 import User from "./components/User";
+import { values } from "lodash";
 function App(props) {
   const {
     auth: { loading },
@@ -75,18 +76,7 @@ function App(props) {
             path="/"
             render={() => {
               if (isAuthenticated) {
-                return (
-                  <Home
-                    getTodo={getTodo}
-                    todo={todo}
-                    history={history}
-                    isAuthenticated={isAuthenticated}
-                    createTodo={createTodo}
-                    deleteTodo={deleteTodo}
-                    markComplete={markComplete}
-                    getTodoComplete={getTodoComplete}
-                  />
-                );
+                return <Home {...props} />;
               } else {
                 return <Redirect to="/login" />;
               }
@@ -109,18 +99,7 @@ function App(props) {
               return <Signup history={history} />;
             }}
           />
-          <Route
-            path="/todo/:id"
-            render={() => {
-              return (
-                <TodoItem
-                  getSelectedTodo={getSelectedTodo}
-                  todo={todo}
-                  markComplete={markComplete}
-                />
-              );
-            }}
-          />
+
           <Route
             path="/profile"
             render={() => {
@@ -216,6 +195,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     updateProfile: (values) => {
       dispatch(updateProfile(values));
+    },
+    updateTodo: (values) => {
+      dispatch(updateTodo(values));
     },
     getNotifications: () => {
       dispatch(getNotifications());
