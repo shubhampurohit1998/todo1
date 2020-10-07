@@ -9,8 +9,6 @@ import {
 import Home from "./container/Home";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
-// import Spinner from "@material-ui/core/CircularProgress/CircularProgress";
-
 import { connect } from "react-redux";
 import {
   login,
@@ -30,6 +28,8 @@ import {
   updateProfile,
   getNotifications,
   updateTodo,
+  markSeen,
+  sendNotification,
 } from "./actions/index";
 import { useHistory } from "react-router-dom";
 // import ProtectedRoute from "./protected.route/Protected";
@@ -37,20 +37,12 @@ import AppBar from "./components/AppBar";
 import Profile from "./components/Profile";
 import Users from "./components/UserTable";
 import User from "./components/User";
-import { values } from "lodash";
 function App(props) {
   const {
-    auth: { loading },
     login,
     tryAutoLogin,
     getTodo,
-    todo,
-    createTodo,
-    deleteTodo,
     isAuthenticated,
-    markComplete,
-    getSelectedTodo,
-    getTodoComplete,
     getNotifications,
     getProfile,
   } = props;
@@ -201,6 +193,12 @@ const mapDispatchToProps = (dispatch) => {
     },
     getNotifications: () => {
       dispatch(getNotifications());
+    },
+    markSeen: (obj) => {
+      dispatch(markSeen(obj));
+    },
+    sendNotification: (id) => {
+      dispatch(sendNotification(id));
     },
   };
 };

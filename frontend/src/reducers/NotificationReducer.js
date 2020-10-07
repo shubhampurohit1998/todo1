@@ -2,6 +2,7 @@ import {
   NOTIFICATION_FAILURE,
   NOTIFICATION_REQUEST,
   NOTIFICATION_SUCCESS,
+  UPDATE_NOTIFICATION,
 } from "../constants/index";
 import { updateObject } from "../utility/index";
 const inititalState = {
@@ -31,6 +32,13 @@ const notificationFailure = (state, action) =>
     data: {},
   });
 
+const updateNotification = (state, action) =>
+  updateObject(state, {
+    loading: false,
+    error: null,
+    data: action.payload,
+  });
+
 const reducer = (state = inititalState, action) => {
   switch (action.type) {
     case NOTIFICATION_REQUEST:
@@ -39,6 +47,8 @@ const reducer = (state = inititalState, action) => {
       return notificationSuccess(state, action);
     case NOTIFICATION_FAILURE:
       return notificationFailure(state, action);
+    case UPDATE_NOTIFICATION:
+      return updateNotification(state, action);
     default:
       return state;
   }

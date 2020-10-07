@@ -10,6 +10,7 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import Spinner from "@material-ui/core/CircularProgress/CircularProgress";
+import _ from "lodash";
 // import Typography from '@material-ui/core/Typography';
 const useStyles = makeStyles((theme) => ({
   typography: {
@@ -42,6 +43,7 @@ export default function SimplePopover(props) {
 
   const {
     notification: { loading, error, data },
+    markSeen,
   } = props;
 
   console.log(data);
@@ -78,12 +80,20 @@ export default function SimplePopover(props) {
                 <ListItem alignItems="flex-start">
                   <ListItemAvatar>
                     <Avatar
-                      alt="Remy Sharp"
+                      alt={_.capitalize(item.seen_by)}
                       src="/static/images/avatar/1.jpg"
                     />
                   </ListItemAvatar>
                   <ListItemText
-                    primary={item.message}
+                    primary={
+                      item.seen ? (
+                        _.capitalize(item.seen_by) + ", " + item.message
+                      ) : (
+                        <b>
+                          {_.capitalize(item.seen_by) + ", " + item.message}
+                        </b>
+                      )
+                    }
                     secondary={
                       <React.Fragment>
                         <Typography
@@ -97,6 +107,7 @@ export default function SimplePopover(props) {
                         {" — I'll be in your neighborhood doing errands this…"}
                       </React.Fragment>
                     }
+                    onClick={() => markSeen(item)}
                   />
                 </ListItem>
                 <Divider variant="inset" component="li" />

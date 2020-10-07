@@ -22,9 +22,10 @@ import {
   NOTIFICATION_REQUEST,
   NOTIFICATION_SUCCESS,
   NOTIFICATION_FAILURE,
+  UPDATE_NOTIFICATION,
 } from "../constants/index";
 import { baseURL, headers } from "../utility/index";
-import _ from "lodash";
+import _, { values } from "lodash";
 import { SubmissionError } from "redux-form";
 export const authCheckState = () => (dispatch) => {
   dispatch({ type: AUTH_REQUEST });
@@ -271,4 +272,38 @@ export const getNotifications = () => (dispatch) => {
     .catch((error) => {
       dispatch({ type: NOTIFICATION_FAILURE, payload: error.message });
     });
+};
+
+export const markSeen = (values) => (dispatch, getState) => {
+  // values.seen = true;
+  const notifications = getState().notification.data;
+  const element = _.find(notifications.results, (obj) => {
+    return obj.id === values.id;
+  });
+  const index = _.indexOf(notifications.results, element);
+  notifications.results.splice(index, 1, values);
+  axios
+    .patch(`${baseURL}/api/notifications/${values.id}`, { seen: true }, headers)
+    .then((resposne) => {
+      dispatch({ type: UPDATE_NOTIFICATION, payload: notifications });
+    })
+    .catch((error) => {
+      dispatch({
+        type: NOTIFICATION_FAILURE,
+        payload: "Notification didn't read",
+      });
+    });
+};
+
+export const sendNotification = (user_id) => (dispatch, getState) => {
+  const seen_by = getState().profile.data.id;
+  const obj = {
+    user: user_id,
+    seen_by: seen_by,
+    message: "WATCH",
+  };
+  axios
+    .post(`${baseURL}/api/notifications`, obj, headers)
+    .then((response) => console.log(response.data))
+    .catch((error) => console.log(error.message));
 };

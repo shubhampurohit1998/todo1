@@ -10,7 +10,7 @@ from .models import User, Todo, Notification
 from . import serializers
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.contrib.auth.models import Group
-from .permissions import AgentPermissions, IsOwnerOrAgent, IsInstanceOwner, UserCanHaveTodos
+from .permissions import AgentPermissions, IsOwnerOrAgent, IsInstanceOwner
 from .paginators import TodoPagination, UserPagination, NotificationPagination
 
 
@@ -62,10 +62,10 @@ class TodoDetailViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.R
     pagination_class = TodoPagination
     permission_classes_by_action = {
         'list': [AgentPermissions],
-        'retrieve': [UserCanHaveTodos | AgentPermissions],
-        'partial_update': [UserCanHaveTodos],
-        'destroy': [UserCanHaveTodos],
-        'update': [UserCanHaveTodos]
+        'retrieve': [IsInstanceOwner | AgentPermissions],
+        'partial_update': [IsInstanceOwner],
+        'destroy': [IsInstanceOwner],
+        'update': [IsInstanceOwner]
     }
 
     def get_permissions(self):
@@ -118,11 +118,27 @@ class TodoDetailViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, mixins.R
 
 class NotificationViewSet(viewsets.ModelViewSet):
     queryset = Notification.objects.all()
-    serializer_class = serializers.NotificationSerializer
     pagination_class = NotificationPagination
     permission_classes_by_action = {
-        'my_notifications': [IsInstanceOwner]
+        'create': [AgentPermissions],
+        'partial_update': [IsInstanceOwner],
+        'update': [IsInstanceOwner],
+        'destroy': [IsInstanceOwner],
+        'list': [AgentPermissions]
     }
+
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return serializers.NotificationSerializer
+        if self.action == 'list':
+            return serializers.NotificationSerializer
+        if self.action == 'create':
+            return serializers.CreateNotificationSerializer
+        if self.action == 'update':
+            return serializers.CreateNotificationSerializer
+        if self.action == 'partial_update':
+            return serializers.CreateNotificationSerializer
+        return serializers.NotificationSerializer
 
     def get_permissions(self):
         try:

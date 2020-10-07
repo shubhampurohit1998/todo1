@@ -35,10 +35,12 @@ export default function DataTable(props) {
 
   const {
     user: { loading, error, users },
+    sendNotification,
   } = props;
 
   const goToUser = (id) => {
     console.log(id);
+    sendNotification(id);
     history.push(`/users/${id}`);
   };
 

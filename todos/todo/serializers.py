@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from . import models
 from dj_rest_auth.registration.serializers import RegisterSerializer
+# from dj_rest_auth.registration.views import RegisterView
 from dj_rest_auth.registration.views import RegisterView
 from rest_framework.response import Response
 
@@ -10,15 +11,6 @@ from django.contrib.auth.models import Group
 
 
 class UserSerializer(serializers.ModelSerializer):
-    # todos = serializers.SerializerMethodField()
-    # This code saved my life
-
-    # def get_todos(self, obj):
-    #     todos = models.Todo.objects.filter(user=obj.id)
-    #     if not todos:
-    #         return None
-    #     return TodoSerializer(todos, many=True).data
-    # include 'todos' in fields if want to get user todos along with user
     class Meta:
         model = models.User
         fields = ('id', 'username', 'email', 'username', 'first_name', 'last_name',
@@ -57,7 +49,28 @@ class CustomRegisterView(RegisterView):
 
 
 class NotificationSerializer(serializers.ModelSerializer):
+    # Another elegant way to do this kind of stuff
+    # message = serializers.CharField(source='get_message_display')
+    message = serializers.SerializerMethodField()
+    seen_by = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField()
+
+    def get_message(self, obj):
+        return obj.get_message_display()
+
+    def get_seen_by(self, obj):
+        return "{} {}".format(obj.seen_by.first_name, obj.seen_by.last_name)
+
+    def get_user(self, obj):
+        return "{} {}".format(obj.user.first_name, obj.user.last_name)
+
+    class Meta:
+        model = models.Notification
+        fields = ['id', 'seen', 'user', 'seen_by', 'message', ]
+
+
+class CreateNotificationSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = models.Notification
         fields = '__all__'
-        # depth = 1
