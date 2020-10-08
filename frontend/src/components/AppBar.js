@@ -21,7 +21,6 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import PeopleRoundedIcon from "@material-ui/icons/PeopleRounded";
 import ExitToAppRoundedIcon from "@material-ui/icons/ExitToAppRounded";
 // For Notification
-import NotificationsIcon from "@material-ui/icons/Notifications";
 import Badge from "@material-ui/core/Badge";
 import NotificationPoper from "./NotificationPoper";
 
@@ -118,7 +117,12 @@ const useStyles = makeStyles((theme) => ({
 const Header = (props) => {
   const classes = useStyles();
   const history = useHistory();
-  const { logout, isAuthenticated, searchTodo } = props;
+  const {
+    logout,
+    isAuthenticated,
+    searchTodo,
+    notification: { loading, error, data: notification_obj },
+  } = props;
 
   const {
     profile: { data },
@@ -140,6 +144,15 @@ const Header = (props) => {
       searchTodo({ title: event.target.value });
     }
   };
+
+  let unseen_count = 0;
+
+  notification_obj.results &&
+    notification_obj.results.forEach((item) => {
+      if (item.seen === false) {
+        unseen_count += 1;
+      }
+    });
 
   return (
     <div className={classes.root}>
@@ -180,7 +193,7 @@ const Header = (props) => {
                 </NavLink>
                 <NavLink to="/">
                   <Badge
-                    badgeContent={4}
+                    badgeContent={unseen_count}
                     color="secondary"
                     className={classes.navLinkStyle}
                   >

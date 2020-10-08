@@ -276,23 +276,29 @@ export const getNotifications = () => (dispatch) => {
 
 export const markSeen = (values) => (dispatch, getState) => {
   // values.seen = true;
-  const notifications = getState().notification.data;
-  const element = _.find(notifications.results, (obj) => {
-    return obj.id === values.id;
-  });
-  const index = _.indexOf(notifications.results, element);
-  notifications.results.splice(index, 1, values);
-  axios
-    .patch(`${baseURL}/api/notifications/${values.id}`, { seen: true }, headers)
-    .then((resposne) => {
-      dispatch({ type: UPDATE_NOTIFICATION, payload: notifications });
-    })
-    .catch((error) => {
-      dispatch({
-        type: NOTIFICATION_FAILURE,
-        payload: "Notification didn't read",
-      });
+  if (values.seen !== true) {
+    const notifications = getState().notification.data;
+    const element = _.find(notifications.results, (obj) => {
+      return obj.id === values.id;
     });
+    const index = _.indexOf(notifications.results, element);
+    notifications.results.splice(index, 1, values);
+    axios
+      .patch(
+        `${baseURL}/api/notifications/${values.id}`,
+        { seen: true },
+        headers
+      )
+      .then((resposne) => {
+        dispatch({ type: UPDATE_NOTIFICATION, payload: notifications });
+      })
+      .catch((error) => {
+        dispatch({
+          type: NOTIFICATION_FAILURE,
+          payload: "Notification didn't read",
+        });
+      });
+  }
 };
 
 export const sendNotification = (user_id) => (dispatch, getState) => {

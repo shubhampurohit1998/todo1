@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Popover from "@material-ui/core/Popover";
 import Typography from "@material-ui/core/Typography";
@@ -30,10 +30,6 @@ export default function SimplePopover(props) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -44,9 +40,16 @@ export default function SimplePopover(props) {
   const {
     notification: { loading, error, data },
     markSeen,
+    getNotifications,
   } = props;
 
-  console.log(data);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  useEffect(() => {
+    getNotifications();
+  }, []);
 
   return (
     <div>
