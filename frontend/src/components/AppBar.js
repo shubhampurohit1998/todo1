@@ -159,7 +159,9 @@ const Header = (props) => {
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
             <NavLink to="/" className={classes.navLinkStyle}>
-              BestPeers Do
+              <span style={{ fontFamily: "'Dancing Script', cursive" }}>
+                BestPeers Do
+              </span>
             </NavLink>
           </Typography>
           <div className={classes.search}>
