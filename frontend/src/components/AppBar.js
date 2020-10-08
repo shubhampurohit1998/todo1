@@ -145,15 +145,6 @@ const Header = (props) => {
     }
   };
 
-  let unseen_count = 0;
-
-  notification_obj.results &&
-    notification_obj.results.forEach((item) => {
-      if (item.seen === false) {
-        unseen_count += 1;
-      }
-    });
-
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -193,7 +184,10 @@ const Header = (props) => {
                 </NavLink>
                 <NavLink to="/">
                   <Badge
-                    badgeContent={unseen_count}
+                    badgeContent={
+                      notification_obj.results &&
+                      notification_obj.results.unseen
+                    }
                     color="secondary"
                     className={classes.navLinkStyle}
                   >

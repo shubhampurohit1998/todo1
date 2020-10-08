@@ -78,7 +78,7 @@ export default function SimplePopover(props) {
             <div>Something went wrong!</div>
           ) : (
             data.results &&
-            data.results.map((item) => (
+            data.results.data.map((item) => (
               <div key={item.id}>
                 <ListItem alignItems="flex-start">
                   <ListItemAvatar>
@@ -105,9 +105,9 @@ export default function SimplePopover(props) {
                           className={classes.inline}
                           color="textPrimary"
                         >
-                          Ali Connors
+                          {item.user}
                         </Typography>
-                        {" — I'll be in your neighborhood doing errands this…"}
+                        {" — Your profile getting attention…"}
                       </React.Fragment>
                     }
                     onClick={() => markSeen(item)}
