@@ -278,11 +278,11 @@ export const markSeen = (values) => (dispatch, getState) => {
   // values.seen = true;
   if (values.seen !== true) {
     const notifications = getState().notification.data;
-    const element = _.find(notifications.results, (obj) => {
+    const element = _.find(notifications.results.data, (obj) => {
       return obj.id === values.id;
     });
-    const index = _.indexOf(notifications.results, element);
-    notifications.results.splice(index, 1, values);
+    const index = _.indexOf(notifications.results.data, element);
+    notifications.results.data.splice(index, 1, values);
     axios
       .patch(
         `${baseURL}/api/notifications/${values.id}`,

@@ -41,3 +41,8 @@ a:active {
   display: flex;
   flex-direction: row;
 }
+
+.todo-font {
+  font-family: "Chilanka", cursive;
+  font: bold;
+}

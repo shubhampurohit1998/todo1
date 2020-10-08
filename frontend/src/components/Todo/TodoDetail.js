@@ -29,7 +29,11 @@ const TodoDetail = (props) => {
             <CheckCircleRoundedIcon color="primary" />
           </span>
           <ListItemText
-            primary={<s>{todo.title}</s>}
+            primary={
+              <s>
+                <div className="todo-font">{todo.title}</div>
+              </s>
+            }
             secondary={"Created " + moment(todo.created_at).fromNow()}
             // onClick={() => gotoTodo(todo.id)}
           />
@@ -40,7 +44,7 @@ const TodoDetail = (props) => {
             <RadioButtonUncheckedRoundedIcon />
           </span>
           <ListItemText
-            primary={todo.title}
+            primary={<div className="todo-font">{todo.title}</div>}
             secondary={"Created " + moment(todo.created_at).fromNow()}
           />
         </>
